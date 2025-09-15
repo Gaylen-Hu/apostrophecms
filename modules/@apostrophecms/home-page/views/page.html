@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block main %}
+  <div class="home-page">
+    <h2>Welcome to ApostropheCMS</h2>
+    
+    <div class="intro">
+      <p>This is a basic ApostropheCMS site. ApostropheCMS is a full-featured, open-source CMS built with Node.js that seeks to empower organizations by combining in-context editing and headless architecture in a full-stack JS environment.</p>
+      
+      <h3>Getting Started</h3>
+      <ul>
+        <li>Visit <code>/login</code> to access the admin interface</li>
+        <li>Create and manage content through the admin bar</li>
+        <li>Check out the <a href="/articles">Articles</a> section</li>
+      </ul>
+      
+      <h3>Features</h3>
+      <ul>
+        <li>In-context editing</li>
+        <li>Responsive design</li>
+        <li>User management</li>
+        <li>Content management</li>
+        <li>SEO-friendly</li>
+      </ul>
+    </div>
+
+    {% if data.page.body %}
+      <div class="page-content">
+        {{ apos.area(data.page, 'body', {
+          widgets: {
+            '@apostrophecms/rich-text': {},
+            '@apostrophecms/image': {}
+          }
+        }) }}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
