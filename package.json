@@ -1,0 +1,27 @@
+{
+  "name": "apostrophecms-site",
+  "version": "1.0.0",
+  "description": "A website built with ApostropheCMS",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "apostrophe": "^4.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "keywords": [
+    "apostrophe",
+    "cms",
+    "content-management",
+    "website"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block main %}
+  <div class="article-page">
+    <article class="article-detail">
+      <header class="article-header">
+        <h2>{{ data.piece.title }}</h2>
+        <p class="article-meta">
+          <small>Published: {{ moment(data.piece.createdAt).format('MMMM Do, YYYY') }}</small>
+        </p>
+      </header>
+
+      {% if data.piece.body %}
+        <div class="article-content">
+          {{ apos.area(data.piece, 'body', {
+            widgets: {
+              '@apostrophecms/rich-text': {},
+              '@apostrophecms/image': {}
+            }
+          }) }}
+        </div>
+      {% endif %}
+    </article>
+
+    <nav class="article-navigation">
+      <a href="{{ data.manager._url }}">&larr; Back to Articles</a>
+    </nav>
+  </div>
+
+  <style>
+    .article-header {
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #007cba;
+    }
+    .article-header h2 {
+      margin: 0 0 10px 0;
+      color: #333;
+    }
+    .article-meta {
+      margin: 0;
+      color: #666;
+    }
+    .article-content {
+      margin-bottom: 40px;
+      line-height: 1.8;
+    }
+    .article-navigation {
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    .article-navigation a {
+      text-decoration: none;
+      color: #007cba;
+      font-weight: 500;
+    }
+    .article-navigation a:hover {
+      text-decoration: underline;
+    }
+  </style>
+{% endblock %}

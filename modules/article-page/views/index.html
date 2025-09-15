@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block main %}
+  <div class="articles-page">
+    <h2>{{ data.page.title }}</h2>
+    
+    {% if data.page.body %}
+      <div class="page-intro">
+        {{ apos.area(data.page, 'body', {
+          widgets: {
+            '@apostrophecms/rich-text': {},
+            '@apostrophecms/image': {}
+          }
+        }) }}
+      </div>
+    {% endif %}
+
+    <div class="articles-list">
+      {% if data.pieces.length %}
+        {% for article in data.pieces %}
+          <article class="article-summary">
+            <h3><a href="{{ article._url }}">{{ article.title }}</a></h3>
+            {% if article.body %}
+              <div class="article-excerpt">
+                {{ apos.area(article, 'body', {
+                  widgets: {
+                    '@apostrophecms/rich-text': {}
+                  }
+                }) }}
+              </div>
+            {% endif %}
+            <p class="article-meta">
+              <small>Published: {{ moment(article.createdAt).format('MMMM Do, YYYY') }}</small>
+            </p>
+          </article>
+        {% endfor %}
+      {% else %}
+        <p>No articles have been published yet.</p>
+      {% endif %}
+    </div>
+
+    {# Pagination would go here if needed #}
+  </div>
+
+  <style>
+    .article-summary {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    .article-summary h3 {
+      margin: 0 0 10px 0;
+    }
+    .article-summary h3 a {
+      text-decoration: none;
+      color: #007cba;
+    }
+    .article-summary h3 a:hover {
+      text-decoration: underline;
+    }
+    .article-excerpt {
+      margin: 10px 0;
+    }
+    .article-meta {
+      margin: 10px 0 0 0;
+    }
+  </style>
+{% endblock %}
