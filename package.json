@@ -1,0 +1,65 @@
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "description": "Marketing starter kit for ApostropheCMS",
+  "type": "module",
+  "scripts": {
+    "start": "node app",
+    "dev": "nodemon",
+    "build": "NODE_ENV=production node app @apostrophecms/asset:build",
+    "serve": "NODE_ENV=production node app",
+    "release": "npm install && npm run build && node app @apostrophecms/migration:migrate"
+  },
+  "nodemonConfig": {
+    "delay": 1000,
+    "verbose": true,
+    "watch": [
+      "./app.js",
+      "./apos.vite.config.js",
+      "./modules/**/*",
+      "./lib/**/*.js",
+      "./views/**/*.html"
+    ],
+    "ignoreRoot": [
+      ".git"
+    ],
+    "ignore": [
+      "**/ui/apos/",
+      "**/ui/src/",
+      "**ui/public/",
+      "locales/*.json",
+      "public/uploads/",
+      "public/apos-frontend/*.js",
+      "data/"
+    ],
+    "ext": "json, js, html, scss, vue"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:apostrophecms/starter-kit-marketing.git"
+  },
+  "author": "Apostrophe Technologies",
+  "license": "MIT",
+  "dependencies": {
+    "@apostrophecms/form": "^1.1.1",
+    "@apostrophecms/i18n-static": "^1.1.1",
+    "@apostrophecms/open-graph": "^1.2.1",
+    "@apostrophecms/seo": "^1.2.0",
+    "@apostrophecms/sitemap": "^1.0.2",
+    "@apostrophecms/vite": "^1.0.0",
+    "aos": "^2.3.4",
+    "apostrophe": "^4.18.0",
+    "dotenv": "^16.0.3",
+    "node-geocoder": "^4.2.0",
+    "normalize.css": "^8.0.1",
+    "ol": "^7.3.0",
+    "photoswipe": "^5.3.7",
+    "rfs": "^10.0.0",
+    "swiper": "^9.2.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "eslint-config-apostrophe": "^6.0.1",
+    "nodemon": "^2.0.7"
+  }
+}

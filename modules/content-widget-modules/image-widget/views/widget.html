@@ -1,0 +1,9 @@
+{%- import "@apostrophecms/image-widget:fragment.html" as image -%}
+<section data-aos="{{ data.widget.animationEffects }}" class="container widget-my-spacing">
+{% render image.render(
+  widget = data.widget, 
+  options = data.options,
+  manager = data.manager, 
+  contextOptions = data.contextOptions
+)%}
+</section>

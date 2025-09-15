@@ -1,0 +1,33 @@
+<!--
+ * @Author: xinyuHu hxyrkcy@outlook.com
+ * @Date: 2025-09-15 18:21:25
+ * @LastEditors: xinyuHu hxyrkcy@outlook.com
+ * @LastEditTime: 2025-09-15 18:21:26
+ * @FilePath: \my-app\views\fragments\i18n-example.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+{% fragment i18nExample(data) %}
+<div class="i18n-example">
+  <h1>{{ __("welcome") }}</h1>
+  <nav>
+    <ul>
+      <li><a href="/">{{ __("home") }}</a></li>
+      <li><a href="/about">{{ __("about") }}</a></li>
+      <li><a href="/services">{{ __("services") }}</a></li>
+      <li><a href="/products">{{ __("products") }}</a></li>
+      <li><a href="/contact">{{ __("contact") }}</a></li>
+    </ul>
+  </nav>
+  
+  <div class="actions">
+    <button class="btn btn-primary">{{ __("get_started") }}</button>
+    <button class="btn btn-secondary">{{ __("learn_more") }}</button>
+  </div>
+  
+  <div class="status-messages">
+    <div class="success">{{ __("success") }}</div>
+    <div class="error">{{ __("error") }}</div>
+    <div class="loading">{{ __("loading") }}</div>
+  </div>
+</div>
+{% endfragment %}

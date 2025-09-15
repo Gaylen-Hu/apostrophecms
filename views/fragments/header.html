@@ -1,0 +1,41 @@
+<!--
+ * @Author: xinyuHu hxyrkcy@outlook.com
+ * @Date: 2025-09-15 19:18:37
+ * @LastEditors: xinyuHu hxyrkcy@outlook.com
+ * @LastEditTime: 2025-09-15 19:18:44
+ * @FilePath: \my-app\views\fragments\header.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+{% import "ui.html" as ui %}
+{% import "button.html" as buttonFrag %}
+
+{% fragment navigationBar(data) %}
+<div class="navigation container is-fluid">
+  <div class="navigation__logo-container">
+    <a href="/" class="navigation__logo">
+      {{ ui.image(data.global.logo) }}
+    </a>
+
+    <div class="navigation__menu-btn"></div>
+  </div>
+
+  <div class="navigation__nav-items">
+    <ul class="navigation__nav-links">
+      {% for nav in data.global.headerNav %}
+        {% set path = apos
+          .helper
+          .linkPath(nav) %}
+        <li>
+          <a href="{{ path }}" aria-label="{{ nav.ariaLabel }}">{{ nav.linkText }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+    
+    <div class="navigation__user-items">
+      {% for btn in data.global.headerBtns %}
+        {% render buttonFrag.render(btn) %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endfragment %}
