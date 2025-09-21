@@ -10,9 +10,9 @@
   cursor: pointer;
   transition: background-color $animate-easing;
 
-  &:hover {
-    background: lighten($secondary, 10%);
-  }
+  // &:hover {
+  //   background: lighten($secondary, 10%);
+  // }
 }
 
 .swiper-button-arrows {

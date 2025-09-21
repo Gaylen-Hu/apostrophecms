@@ -1,0 +1,42 @@
+<section class="news-hero-widget news-hero-widget--{{ data.widget.animation }} {{ data.widget.paddingSize }}"
+         data-news-hero-widget
+         {% if data.widget.parallaxEffect %}data-parallax{% endif %}
+         style="background-color: {{ data.widget.backgroundColor }}; color: {{ data.widget.textColor }};">
+  
+  <!-- 背景图片区域 -->
+  <div class="news-hero-widget__background">
+    {% if data.widget.backgroundImage %}
+      {{ apos.image(data.widget.backgroundImage, { 
+        size: 'full',
+        class: 'news-hero-widget__bg-image'
+      }) }}
+    {% elif data.widget.backgroundImageUrl %}
+      <img src="{{ data.widget.backgroundImageUrl }}" 
+           alt="新闻背景" 
+           class="news-hero-widget__bg-image">
+    {% endif %}
+    
+    <!-- 遮罩层 -->
+    <div class="news-hero-widget__overlay" 
+         style="background-color: {{ data.widget.backgroundColor }}; opacity: {{ data.widget.overlayOpacity / 100 }};"></div>
+  </div>
+  
+  <!-- 内容区域 -->
+  <div class="news-hero-widget__content">
+    <div class="news-hero-widget__container">
+      {% if data.widget.title %}
+        <h1 class="news-hero-widget__title {{ data.widget.titleSize }}" 
+            style="color: {{ data.widget.textColor }};">
+          {{ data.widget.title }}
+        </h1>
+      {% endif %}
+      
+      {% if data.widget.subtitle %}
+        <p class="news-hero-widget__subtitle" 
+           style="color: {{ data.widget.subtitleColor }};">
+          {{ data.widget.subtitle }}
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</section>

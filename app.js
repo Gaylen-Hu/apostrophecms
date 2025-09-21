@@ -2,7 +2,7 @@
  * @Author: xinyuHu hxyrkcy@outlook.com
  * @Date: 2025-09-15 18:13:41
  * @LastEditors: xinyuHu hxyrkcy@outlook.com
- * @LastEditTime: 2025-09-15 18:19:41
+ * @LastEditTime: 2025-09-20 23:15:27
  * @FilePath: \my-app\app.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,12 +10,12 @@ import apostrophe from 'apostrophe';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
 apostrophe({
   root: import.meta,
   shortName: 'my-app',
   baseUrl: process.env.APOS_BASE_URL || 'http://localhost:3000',
   nestedModuleSubdirs: true,
+  bundles: [ '@apostrophecms/blog' ],
   modules: {
     // Apostrophe module configuration
     // *******************************
@@ -27,6 +27,9 @@ apostrophe({
     // have a minimal configuration here to turn them on: `moduleName: {}`
     // ***********************************************************************
     // `className` options set custom CSS classes for Apostrophe core widgets.
+
+    '@apostrophecms/blog': {},
+    '@apostrophecms/blog-page': {},
     '@apostrophecms/rich-text-widget': {
       options: {}
     },
@@ -80,6 +83,14 @@ apostrophe({
 
     // The project's first custom page type.
     'default-page': {},
+    'about-page': {},
+    'products-page': {},
+    'news-page': {},
+    'news-page-page': {},
+    'contact-page': {},
+    'home-page': {},
+    'homePageFirst-widget': {},
+    'homepageAbout-widget': {},
     'content-widget-modules': {
       options: {
         ignoreNoCodeWarning: true

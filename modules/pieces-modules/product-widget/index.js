@@ -50,8 +50,13 @@ export default {
           project: {
             type: 'product',
             title: 1,
-            description: 1,
-            price: 1
+            productName: 1,
+            productDescription: 1,
+            productImage: 1,
+            _productType: 1,
+            price: 1,
+            inStock: 1,
+            isFeatured: 1
           }
         }
       },

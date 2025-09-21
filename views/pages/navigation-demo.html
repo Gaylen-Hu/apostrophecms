@@ -1,0 +1,426 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<section class="navigation-demo">
+  <div class="container">
+    <div class="demo-header">
+      <h1>导航系统演示</h1>
+      <p class="demo-subtitle">展示ApostropheCMS导航系统的各种功能和样式</p>
+    </div>
+
+    <div class="demo-content">
+      <!-- 导航功能说明 -->
+      <div class="demo-section">
+        <h2>导航功能特性</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>响应式设计</h3>
+            <p>完全响应式的导航系统，在桌面端和移动端都有优秀的用户体验</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3>移动端优化</h3>
+            <p>专门的移动端菜单，支持触摸操作和手势导航</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">🔗</div>
+            <h3>子菜单支持</h3>
+            <p>支持多级子菜单，可以创建复杂的导航结构</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">🏷️</div>
+            <h3>徽章系统</h3>
+            <p>支持在导航项上显示徽章，如通知数量或状态标识</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">🍞</div>
+            <h3>面包屑导航</h3>
+            <p>自动生成的面包屑导航，帮助用户了解当前位置</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3>主题支持</h3>
+            <p>支持深色模式和浅色模式，自动适应系统偏好</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 导航类型展示 -->
+      <div class="demo-section">
+        <h2>导航类型</h2>
+        <div class="nav-types">
+          <div class="nav-type-item">
+            <h3>主要导航</h3>
+            <p>位于页面顶部的主要导航菜单，包含Logo、导航链接和用户操作区域</p>
+            <div class="nav-preview">
+              <div class="nav-preview-item">Logo</div>
+              <div class="nav-preview-item">首页</div>
+              <div class="nav-preview-item">产品</div>
+              <div class="nav-preview-item">服务</div>
+              <div class="nav-preview-item">关于我们</div>
+              <div class="nav-preview-item">联系我们</div>
+            </div>
+          </div>
+          
+          <div class="nav-type-item">
+            <h3>页面树导航</h3>
+            <p>基于ApostropheCMS页面树结构自动生成的导航</p>
+            <div class="nav-preview page-tree-preview">
+              <div class="nav-preview-item">首页</div>
+              <div class="nav-preview-item">产品中心</div>
+              <div class="nav-preview-item">服务项目</div>
+              <div class="nav-preview-item">新闻资讯</div>
+              <div class="nav-preview-item">关于我们</div>
+            </div>
+          </div>
+          
+          <div class="nav-type-item">
+            <h3>面包屑导航</h3>
+            <p>显示当前页面在网站结构中的位置</p>
+            <div class="breadcrumb-preview">
+              <span>首页</span>
+              <span>/</span>
+              <span>产品中心</span>
+              <span>/</span>
+              <span>智能手机</span>
+              <span>/</span>
+              <span>iPhone 15 Pro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 移动端演示 -->
+      <div class="demo-section">
+        <h2>移动端体验</h2>
+        <div class="mobile-demo">
+          <div class="mobile-frame">
+            <div class="mobile-header">
+              <div class="mobile-logo">Logo</div>
+              <div class="mobile-menu-btn">☰</div>
+            </div>
+            <div class="mobile-content">
+              <p>在移动设备上，导航会自动切换为汉堡菜单模式，提供更好的触摸体验。</p>
+              <ul class="mobile-features">
+                <li>✅ 触摸友好的大按钮</li>
+                <li>✅ 滑动手势支持</li>
+                <li>✅ 全屏菜单覆盖</li>
+                <li>✅ 用户信息显示</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 配置说明 -->
+      <div class="demo-section">
+        <h2>配置说明</h2>
+        <div class="config-info">
+          <h3>在管理界面中配置导航</h3>
+          <ol>
+            <li>登录ApostropheCMS管理界面</li>
+            <li>进入"全局设置" → "导航"</li>
+            <li>添加或编辑导航项目</li>
+            <li>设置链接类型（页面链接或自定义URL）</li>
+            <li>配置子菜单（可选）</li>
+            <li>添加徽章文本（可选）</li>
+            <li>保存设置</li>
+          </ol>
+          
+          <h3>支持的字段类型</h3>
+          <ul>
+            <li><strong>页面链接</strong>：链接到ApostropheCMS中的页面</li>
+            <li><strong>自定义URL</strong>：链接到外部网站或特定URL</li>
+            <li><strong>子菜单</strong>：创建下拉菜单或移动端展开菜单</li>
+            <li><strong>徽章</strong>：显示通知数量或状态标识</li>
+            <li><strong>新窗口打开</strong>：设置链接在新标签页中打开</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 代码示例 -->
+      <div class="demo-section">
+        <h2>代码示例</h2>
+        <div class="code-examples">
+          <div class="code-example">
+            <h3>在模板中使用导航</h3>
+            <pre><code>{% import 'fragments/navigation.html' as navigation %}
+
+{# 主要导航 #}
+{% render navigation.mainNavigation(data) %}
+
+{# 面包屑导航 #}
+{% render navigation.breadcrumbNavigation(data) %}</code></pre>
+          </div>
+          
+          <div class="code-example">
+            <h3>自定义导航样式</h3>
+            <pre><code>// 修改导航颜色
+.main-navigation {
+  background: #your-color;
+  border-bottom: 1px solid #your-border-color;
+}
+
+.nav-link {
+  color: #your-text-color;
+  
+  &:hover {
+    color: #your-hover-color;
+  }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.navigation-demo {
+  padding: 2rem 0;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.demo-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.demo-header h1 {
+  font-size: 2.5rem;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.demo-subtitle {
+  font-size: 1.25rem;
+  color: #64748b;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.demo-section {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.demo-section h2 {
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  font-size: 1.875rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.feature-card {
+  text-align: center;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.feature-card p {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.nav-types {
+  display: grid;
+  gap: 2rem;
+}
+
+.nav-type-item h3 {
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.nav-type-item p {
+  color: #64748b;
+  margin-bottom: 1rem;
+}
+
+.nav-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f1f5f9;
+  border-radius: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-preview-item {
+  padding: 0.5rem 1rem;
+  background: white;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.page-tree-preview {
+  justify-content: center;
+}
+
+.breadcrumb-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f1f5f9;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.mobile-demo {
+  display: flex;
+  justify-content: center;
+}
+
+.mobile-frame {
+  width: 300px;
+  background: white;
+  border-radius: 1rem;
+  border: 2px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.mobile-logo {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.mobile-menu-btn {
+  font-size: 1.25rem;
+  color: #64748b;
+}
+
+.mobile-content {
+  padding: 1.5rem;
+}
+
+.mobile-features {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.mobile-features li {
+  padding: 0.25rem 0;
+  color: #475569;
+}
+
+.config-info h3 {
+  color: #1e293b;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.config-info ol,
+.config-info ul {
+  color: #475569;
+  line-height: 1.6;
+}
+
+.config-info li {
+  margin-bottom: 0.5rem;
+}
+
+.code-examples {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.code-example h3 {
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.code-example pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.code-example code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .demo-header h1 {
+    font-size: 2rem;
+  }
+  
+  .demo-section {
+    padding: 1.5rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav-preview {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .nav-preview-item {
+    text-align: center;
+  }
+}
+</style>
+{% endblock %}

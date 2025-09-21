@@ -1,0 +1,743 @@
+---
+description: ApostropheCMS项目开发规则和最佳实践
+globs: ["**/*.js", "**/*.html", "**/*.scss", "**/*.vue", "**/*.json"]
+alwaysApply: true
+---
+
+# ApostropheCMS 项目开发规则
+
+## 项目概述
+这是一个基于ApostropheCMS 4.x的营销网站项目，支持中英文双语，使用Vite作为构建工具。
+
+## 核心架构
+
+### 模块结构
+- **@apostrophecms/*** - 核心ApostropheCMS模块
+- **content-widget-modules/** - 内容小部件模块
+- **pieces-modules/** - 内容片段模块
+- **default-page/** - 默认页面类型
+- **asset/** - 静态资源模块
+
+### 技术栈
+- **后端**: Node.js + ApostropheCMS 4.x
+- **前端**: Vite + SCSS + JavaScript
+- **模板**: Nunjucks
+- **数据库**: MongoDB
+- **国际化**: i18n-static模块
+
+## 开发规范
+
+### 1. 文件命名约定
+- 模块目录使用kebab-case: `team-member-widget`
+- JavaScript文件使用camelCase: `index.js`
+- 模板文件使用kebab-case: `widget.html`
+- SCSS文件使用kebab-case: `_variables.scss`
+
+### 2. 模块开发规范
+
+#### 小部件模块结构
+```
+widget-name/
+├── index.js          # 模块配置和字段定义
+├── views/
+│   └── widget.html   # 小部件模板
+├── ui/
+│   └── src/
+│       ├── index.js  # Vue组件逻辑
+│       └── index.scss # 样式文件
+└── public/
+    └── preview.jpg   # 预览图片
+```
+
+#### 内容片段模块结构
+```
+piece-name/
+├── index.js          # 片段配置和字段定义
+├── views/
+│   └── show.html     # 显示模板
+└── public/
+    └── preview.jpg   # 预览图片
+```
+
+### 3. 代码规范
+
+#### JavaScript模块配置
+```javascript
+export default {
+  extend: '@apostrophecms/widget-type',
+  options: {
+    label: 'Widget Label',
+    icon: 'widget-icon',
+    // 字段配置
+    fields: {
+      add: {
+        // 字段定义
+      },
+      group: {
+        // 字段分组
+      }
+    }
+  }
+};
+```
+
+#### 模板开发
+- 使用Nunjucks模板语法
+- 继承layout.html布局
+- 使用ApostropheCMS的area和widget系统
+- 支持响应式设计
+
+#### SCSS样式规范
+- 使用BEM命名约定
+- 模块化样式文件
+- 使用CSS变量和mixins
+- 支持响应式断点
+
+### 4. 国际化规范
+
+#### 本地化文件结构
+```
+modules/@apostrophecms/i18n/i18n/
+├── myApp/           # 项目级别命名空间
+│   ├── zh.json     # 中文翻译
+│   └── en.json     # 英文翻译
+├── zh.json         # 核心UI中文翻译
+└── en.json         # 核心UI英文翻译
+```
+
+#### 模板中的本地化
+```html
+<!-- 基本用法 -->
+<h1>{{ __t('myApp:welcome') }}</h1>
+
+<!-- 带插值的用法 -->
+<p>{{ __t('myApp:contact_office', { city: data.piece.city }) }}</p>
+```
+
+### 5. 字段类型使用
+
+#### 常用字段类型
+- `string` - 文本字段
+- `text` - 多行文本
+- `area` - 富文本区域
+- `attachment` - 文件附件
+- `relationship` - 关系字段
+- `select` - 下拉选择
+- `boolean` - 布尔值
+- `integer` - 整数
+- `float` - 浮点数
+- `date` - 日期
+- `time` - 时间
+- `color` - 颜色选择器
+
+#### 字段配置示例
+```javascript
+fields: {
+  add: {
+    title: {
+      type: 'string',
+      label: 'Title',
+      required: true
+    },
+    description: {
+      type: 'text',
+      label: 'Description',
+      textarea: true
+    },
+    image: {
+      type: 'attachment',
+      label: 'Image',
+      fileGroup: 'images'
+    }
+  }
+}
+```
+
+### 6. 小部件开发最佳实践
+
+#### 小部件配置
+```javascript
+export default {
+  extend: '@apostrophecms/widget-type',
+  options: {
+    label: 'Custom Widget',
+    icon: 'widget-icon',
+    previewImage: 'preview.jpg'
+  },
+  fields: {
+    add: {
+      // 字段定义
+    }
+  }
+};
+```
+
+#### 小部件模板
+```html
+<section class="custom-widget custom-widget--{{ data.widget.style }}">
+  {% if data.widget.title %}
+    <h2>{{ data.widget.title }}</h2>
+  {% endif %}
+  
+  {% if data.widget.content %}
+    <div class="custom-widget__content">
+      {{ data.widget.content }}
+    </div>
+  {% endif %}
+</section>
+```
+
+### 7. API路由开发
+
+#### 自定义API路由
+```javascript
+export default {
+  apiRoutes(self) {
+    return {
+      get: {
+        async customEndpoint(req) {
+          const data = await self.find(req).toArray();
+          return { data };
+        }
+      }
+    };
+  }
+};
+```
+
+### 8. 数据库查询
+
+#### 查询构建器使用
+```javascript
+// 查找所有已发布的页面
+const pages = await self.apos.doc.find(req, {
+  type: 'default-page',
+  published: true
+}).toArray();
+
+// 查找特定片段
+const products = await self.apos.doc.find(req, {
+  type: 'product',
+  published: true
+}).sort({ createdAt: -1 }).limit(10).toArray();
+```
+
+### 9. 前端资源管理
+
+#### Vite配置
+- 使用`@apostrophecms/vite`模块
+- 支持SCSS编译
+- 自动处理资源优化
+- 支持热重载
+
+#### 静态资源
+- 图片放在`public/images/`目录
+- 字体放在`public/fonts/`目录
+- 第三方库通过npm安装
+
+### 10. 部署和构建
+
+#### 构建命令
+```bash
+# 开发模式
+npm run dev
+
+# 生产构建
+npm run build
+
+# 生产运行
+npm run serve
+
+# 完整发布
+npm run release
+```
+
+#### 环境变量
+- `APOS_BASE_URL` - 基础URL
+- `APOS_MONGODB_URI` - MongoDB连接字符串
+- `APOS_SECRET` - 应用密钥
+
+### 11. 调试和开发工具
+
+#### 本地化调试
+```bash
+# 启用i18n调试
+APOS_DEBUG_I18N=1 npm run dev
+
+# 显示本地化指示器
+APOS_SHOW_I18N=1 npm run dev
+```
+
+#### 日志和错误处理
+- 使用`apos.log()`记录日志
+- 使用`apos.error()`抛出错误
+- 配置适当的错误页面
+
+### 12. 安全最佳实践
+
+#### 权限控制
+- 使用ApostropheCMS的权限系统
+- 配置适当的用户角色
+- 保护敏感API端点
+
+#### 数据验证
+- 使用字段验证规则
+- 清理用户输入
+- 防止XSS攻击
+
+### 13. 性能优化
+
+#### 数据库优化
+- 使用适当的索引
+- 限制查询结果数量
+- 使用投影减少数据传输
+
+#### 前端优化
+- 压缩CSS和JavaScript
+- 优化图片资源
+- 使用CDN加速
+
+### 14. 测试策略
+
+#### 功能测试
+- 测试小部件渲染
+- 测试API端点
+- 测试用户权限
+
+#### 国际化测试
+- 测试多语言切换
+- 验证翻译完整性
+- 测试RTL语言支持
+
+## 常用命令
+
+```bash
+# 启动开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+
+# 运行数据库迁移
+node app @apostrophecms/migration:migrate
+
+# 清除缓存
+node app @apostrophecms/cache:clear
+```
+
+## 教程实践指南
+
+### 1. 页面创建教程实践
+
+#### 创建自定义页面类型
+```javascript
+// modules/custom-page/index.js
+export default {
+  extend: '@apostrophecms/page-type',
+  options: {
+    label: 'Custom Page',
+    pluralLabel: 'Custom Pages'
+  },
+  fields: {
+    add: {
+      subtitle: {
+        type: 'string',
+        label: 'Subtitle'
+      },
+      heroImage: {
+        type: 'attachment',
+        label: 'Hero Image',
+        fileGroup: 'images'
+      }
+    },
+    group: {
+      basics: {
+        label: 'Basics',
+        fields: ['title', 'subtitle', 'heroImage']
+      }
+    }
+  }
+};
+```
+
+#### 页面模板继承
+```html
+<!-- modules/custom-page/views/page.html -->
+{% extends "layout.html" %}
+
+{% block main %}
+<section class="custom-page">
+  <div class="hero">
+    {% if data.page.heroImage %}
+      {{ apos.image(data.page.heroImage, { size: 'full' }) }}
+    {% endif %}
+    <h1>{{ data.page.title }}</h1>
+    {% if data.page.subtitle %}
+      <p class="subtitle">{{ data.page.subtitle }}</p>
+    {% endif %}
+  </div>
+  
+  <div class="content">
+    {% area data.page, 'main' %}
+  </div>
+</section>
+{% endblock %}
+```
+
+### 2. 小部件开发教程实践
+
+#### 创建自定义小部件
+```javascript
+// modules/content-widget-modules/hero-widget/index.js
+export default {
+  extend: '@apostrophecms/widget-type',
+  options: {
+    label: 'Hero Widget',
+    icon: 'hero-icon',
+    previewImage: 'preview.jpg'
+  },
+  fields: {
+    add: {
+      headline: {
+        type: 'string',
+        label: 'Headline',
+        required: true
+      },
+      subheadline: {
+        type: 'text',
+        label: 'Subheadline',
+        textarea: true
+      },
+      backgroundImage: {
+        type: 'attachment',
+        label: 'Background Image',
+        fileGroup: 'images'
+      },
+      ctaText: {
+        type: 'string',
+        label: 'Call to Action Text'
+      },
+      ctaUrl: {
+        type: 'url',
+        label: 'Call to Action URL'
+      }
+    },
+    group: {
+      content: {
+        label: 'Content',
+        fields: ['headline', 'subheadline']
+      },
+      design: {
+        label: 'Design',
+        fields: ['backgroundImage', 'ctaText', 'ctaUrl']
+      }
+    }
+  }
+};
+```
+
+#### 小部件模板
+```html
+<!-- modules/content-widget-modules/hero-widget/views/widget.html -->
+<section class="hero-widget" 
+         {% if data.widget.backgroundImage %}
+           style="background-image: url({{ apos.attachment.url(data.widget.backgroundImage, { size: 'full' }) }})"
+         {% endif %}>
+  <div class="hero-widget__content">
+    <h1 class="hero-widget__headline">{{ data.widget.headline }}</h1>
+    {% if data.widget.subheadline %}
+      <p class="hero-widget__subheadline">{{ data.widget.subheadline }}</p>
+    {% endif %}
+    {% if data.widget.ctaText and data.widget.ctaUrl %}
+      <a href="{{ data.widget.ctaUrl }}" class="hero-widget__cta">
+        {{ data.widget.ctaText }}
+      </a>
+    {% endif %}
+  </div>
+</section>
+```
+
+### 3. 内容片段教程实践
+
+#### 创建产品片段
+```javascript
+// modules/pieces-modules/product/index.js
+export default {
+  extend: '@apostrophecms/piece-type',
+  options: {
+    label: 'Product',
+    pluralLabel: 'Products',
+    icon: 'product-icon'
+  },
+  fields: {
+    add: {
+      price: {
+        type: 'float',
+        label: 'Price',
+        required: true
+      },
+      description: {
+        type: 'text',
+        label: 'Description',
+        textarea: true
+      },
+      images: {
+        type: 'array',
+        label: 'Product Images',
+        fields: {
+          add: {
+            image: {
+              type: 'attachment',
+              label: 'Image',
+              fileGroup: 'images'
+            },
+            caption: {
+              type: 'string',
+              label: 'Caption'
+            }
+          }
+        }
+      },
+      category: {
+        type: 'select',
+        label: 'Category',
+        choices: [
+          { label: 'Electronics', value: 'electronics' },
+          { label: 'Clothing', value: 'clothing' },
+          { label: 'Books', value: 'books' }
+        ]
+      },
+      inStock: {
+        type: 'boolean',
+        label: 'In Stock',
+        def: true
+      }
+    },
+    group: {
+      basics: {
+        label: 'Basic Information',
+        fields: ['title', 'price', 'description']
+      },
+      media: {
+        label: 'Media',
+        fields: ['images']
+      },
+      details: {
+        label: 'Product Details',
+        fields: ['category', 'inStock']
+      }
+    }
+  }
+};
+```
+
+#### 产品列表页面
+```javascript
+// modules/pieces-modules/product-page/index.js
+export default {
+  extend: '@apostrophecms/piece-page-type',
+  options: {
+    label: 'Product Page',
+    pluralLabel: 'Product Pages'
+  }
+};
+```
+
+### 4. 导航构建教程实践
+
+#### 全局导航配置
+```javascript
+// modules/@apostrophecms/global/index.js
+export default {
+  fields: {
+    add: {
+      headerNav: {
+        type: 'array',
+        label: 'Header Navigation',
+        fields: {
+          add: {
+            linkText: {
+              type: 'string',
+              label: 'Link Text',
+              required: true
+            },
+            linkUrl: {
+              type: 'url',
+              label: 'Link URL'
+            },
+            ariaLabel: {
+              type: 'string',
+              label: 'ARIA Label'
+            }
+          }
+        }
+      },
+      footerNav: {
+        type: 'array',
+        label: 'Footer Navigation',
+        fields: {
+          add: {
+            linkText: {
+              type: 'string',
+              label: 'Link Text',
+              required: true
+            },
+            linkUrl: {
+              type: 'url',
+              label: 'Link URL'
+            }
+          }
+        }
+      },
+      social: {
+        type: 'array',
+        label: 'Social Media Links',
+        fields: {
+          add: {
+            icon: {
+              type: 'string',
+              label: 'Icon Name',
+              required: true
+            },
+            link: {
+              type: 'url',
+              label: 'Social Media URL',
+              required: true
+            }
+          }
+        }
+      }
+    }
+  }
+};
+```
+
+### 5. 管理界面自定义教程实践
+
+#### 自定义管理栏按钮
+```javascript
+// modules/@apostrophecms/admin-bar/index.js
+export default {
+  options: {
+    add: {
+      customButton: {
+        label: 'Custom Action',
+        icon: 'custom-icon',
+        action: 'custom-action'
+      }
+    }
+  },
+  methods(self) {
+    return {
+      async customAction(req) {
+        // 自定义操作逻辑
+        return { success: true };
+      }
+    };
+  }
+};
+```
+
+### 6. 静态资源管理教程实践
+
+#### 资源模块配置
+```javascript
+// modules/asset/index.js
+export default {
+  options: {
+    // 配置静态资源
+    bundles: {
+      'site': {
+        js: [
+          { file: './ui/src/index.js' }
+        ],
+        css: [
+          { file: './ui/src/index.scss' }
+        ]
+      }
+    }
+  }
+};
+```
+
+#### SCSS模块化结构
+```scss
+// modules/asset/ui/src/index.scss
+@import 'variables';
+@import 'mixins';
+@import 'base';
+@import 'components/buttons';
+@import 'components/forms';
+@import 'components/navigation';
+@import 'components/widgets';
+@import 'utilities';
+```
+
+### 7. 扩展安装教程实践
+
+#### 安装官方扩展
+```bash
+# 安装SEO扩展
+npm install @apostrophecms/seo
+
+# 安装表单扩展
+npm install @apostrophecms/form
+
+# 安装国际化扩展
+npm install @apostrophecms/i18n-static
+```
+
+#### 配置扩展
+```javascript
+// app.js
+modules: {
+  '@apostrophecms/seo': {},
+  '@apostrophecms/form': {
+    options: {
+      shortcut: 'a,f'
+    }
+  },
+  '@apostrophecms/i18n-static': {
+    options: {
+      autopublish: true
+    }
+  }
+}
+```
+
+### 8. 部署最佳实践
+
+#### 环境配置
+```javascript
+// app.js
+apostrophe({
+  shortName: 'my-app',
+  baseUrl: process.env.APOS_BASE_URL || 'http://localhost:3000',
+  // 生产环境配置
+  ...(process.env.NODE_ENV === 'production' && {
+    minify: true,
+    bundle: true
+  })
+});
+```
+
+#### 部署脚本
+```json
+{
+  "scripts": {
+    "dev": "nodemon",
+    "build": "NODE_ENV=production node app @apostrophecms/asset:build",
+    "serve": "NODE_ENV=production node app",
+    "release": "npm install && npm run build && node app @apostrophecms/migration:migrate"
+  }
+}
+```
+
+## 参考文档
+
+- [ApostropheCMS官方文档](https://docs.apostrophecms.org/)
+- [ApostropheCMS教程](https://docs.apostrophecms.org/tutorials/)
+- [模块配置参考](https://docs.apostrophecms.org/reference/module-overview.html)
+- [字段类型参考](https://docs.apostrophecms.org/reference/field-types.html)
+- [模板开发指南](https://docs.apostrophecms.org/guide/templating/working-with-templates.html)
+- [国际化指南](https://docs.apostrophecms.org/guide/localization/overview.html)

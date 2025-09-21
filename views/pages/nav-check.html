@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}导航检查{% endblock %}
+
+{% block main %}
+<div class="container py-5">
+  <h1>导航数据检查</h1>
+  
+  <div class="alert alert-info">
+    <h4>检查结果:</h4>
+    <ul>
+      <li><strong>data.global 存在:</strong> {% if data.global %}是{% else %}否{% endif %}</li>
+      <li><strong>data.global.headerNav 存在:</strong> {% if data.global and data.global.headerNav %}是{% else %}否{% endif %}</li>
+      <li><strong>导航项目数量:</strong> {% if data.global and data.global.headerNav %}{{ data.global.headerNav.length }}{% else %}0{% endif %}</li>
+    </ul>
+  </div>
+  
+  {% if data.global and data.global.headerNav and data.global.headerNav.length > 0 %}
+    <div class="alert alert-success">
+      <h4>✅ 找到导航数据!</h4>
+      <p>共找到 {{ data.global.headerNav.length }} 个导航项目</p>
+    </div>
+    
+    <h3>导航项目列表:</h3>
+    <ul class="list-group">
+      {% for nav in data.global.headerNav %}
+        <li class="list-group-item">
+          <strong>{{ nav.linkText or '未设置文本' }}</strong>
+          <br>
+          <small>
+            类型: {{ nav.linkType or '未设置' }} | 
+            链接: {{ apos.modules['@apostrophecms/global'].linkPath(nav) }} |
+            子菜单: {% if nav.hasSubmenu %}是{% else %}否{% endif %}
+            {% if nav.badge %} | 徽章: {{ nav.badge }}{% endif %}
+          </small>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-warning">
+      <h4>⚠️ 没有找到导航数据</h4>
+      <p>请按照以下步骤配置导航:</p>
+      <ol>
+        <li>登录管理界面 (通常是 <code>/admin</code>)</li>
+        <li>进入 <strong>全局设置</strong></li>
+        <li>点击 <strong>导航</strong> 标签</li>
+        <li>在 <strong>头部导航项目</strong> 中添加导航项目</li>
+        <li>配置每个导航项目的链接文本、链接类型和链接地址</li>
+        <li>保存设置</li>
+      </ol>
+    </div>
+  {% endif %}
+  
+  <hr>
+  
+  <h3>调试信息:</h3>
+  <details>
+    <summary>点击查看原始数据</summary>
+    <pre class="bg-light p-3 mt-2" style="max-height: 300px; overflow-y: auto;">{{ data.global | dump(2) }}</pre>
+  </details>
+</div>
+{% endblock %}

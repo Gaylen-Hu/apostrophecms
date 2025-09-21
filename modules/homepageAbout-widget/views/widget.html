@@ -1,0 +1,80 @@
+<!--
+ * @Author: xinyuHu hxyrkcy@outlook.com
+ * @Date: 2025-09-21 13:37:54
+ * @LastEditors: xinyuHu hxyrkcy@outlook.com
+ * @LastEditTime: 2025-09-21 13:45:56
+ * @FilePath: \my-app\modules\homepageAbout-widget\views\widget.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<section 
+  class="py-20 homepage-about-widget" 
+  data-homepage-about-widget
+  style="background-color: {{ data.widget.backgroundColor or '#ffffff' }};"
+  {% if data.widget.animationEffects %}
+    data-aos="{{ data.widget.animationEffects }}"
+  {% endif %}
+>
+  <div class="container mx-auto px-4 md:px-6">
+    <!-- 标题区域 -->
+ 
+
+    <!-- 主要内容区域 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <!-- 公司图片 -->
+      {% if data.widget.companyImage %}
+        <div class="rounded-xl overflow-hidden shadow-xl" style="opacity: 1; transform: none;">
+          {% set companyImage = apos.image.first(data.widget.companyImage) %}
+          {% if companyImage %}
+            <img 
+              src="{{ apos.attachment.url(companyImage, { size: 'full' }) }}" 
+              alt="{{ companyImage.title or '公司厂区外观' }}" 
+              class="w-full h-auto"
+            >
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <!-- 公司信息 -->
+      <div style="opacity: 1; transform: none;">
+          <h3 class="text-2xl font-bold text-gray-800 mb-4">
+            公司简介
+          </h3>
+          <div class="text-gray-600 mb-8 leading-relaxed">
+            {% area data.widget, 'companyDescription' %}
+          </div>
+
+        <!-- 统计信息 -->
+        {% if data.widget.statistics and data.widget.statistics.length > 0 %}
+          <div class="grid grid-cols-2 gap-6 mb-8">
+            {% for stat in data.widget.statistics %}
+              <div class="bg-gray-50 p-5 rounded-lg">
+                {% if stat.icon %}
+                  <div 
+                    class="text-3xl mb-2"
+                    style="color: {{ data.widget.primaryColor or '#2563eb' }};"
+                  >
+                    <i class="{{ stat.icon }}"></i>
+                  </div>
+                {% endif %}
+                <h4 class="font-semibold text-gray-800 mb-1">{{ stat.title }}</h4>
+                <p class="text-gray-600">{{ stat.value }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <!-- 了解更多链接 -->
+        {% if data.widget.learnMoreLink and data.widget.learnMoreLink.url %}
+          <a 
+            href="{{ data.widget.learnMoreLink.url }}" 
+            class="inline-flex items-center font-semibold hover:opacity-80 transition-opacity duration-300"
+            style="color: {{ data.widget.primaryColor or '#2563eb' }};"
+          >
+            {{ data.widget.learnMoreLink.text or '了解更多公司信息' }}
+            <i class="fa-solid fa-arrow-right ml-2"></i>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>

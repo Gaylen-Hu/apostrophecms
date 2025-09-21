@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block title %}打印导航数据{% endblock %}
+
+{% block main %}
+<div class="container py-5">
+  <h1>打印 data.global.headerNav 数据</h1>
+  
+  <div class="row">
+    <div class="col-12">
+      <h2>1. 基本检查</h2>
+      <div class="alert alert-info">
+        <p><strong>data.global 存在:</strong> {% if data.global %}✅ 是{% else %}❌ 否{% endif %}</p>
+        <p><strong>data.global.headerNav 存在:</strong> {% if data.global and data.global.headerNav %}✅ 是{% else %}❌ 否{% endif %}</p>
+        <p><strong>数据类型:</strong> {% if data.global.headerNav %}array{% else %}undefined{% endif %}</p>
+        <p><strong>数据长度:</strong> {% if data.global.headerNav %}{{ data.global.headerNav.length }}{% else %}0{% endif %}</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-12">
+      <h2>2. 原始数据输出</h2>
+      <div class="card">
+        <div class="card-header">
+          <h5>data.global.headerNav 完整数据</h5>
+        </div>
+        <div class="card-body">
+          <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; max-height: 500px; overflow-y: auto;">{{ data.global.headerNav | dump(2) }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-12">
+      <h2>3. 格式化显示</h2>
+      {% if data.global.headerNav and data.global.headerNav.length > 0 %}
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>链接文本</th>
+                <th>链接类型</th>
+                <th>链接地址</th>
+                <th>有子菜单</th>
+                <th>徽章</th>
+                <th>目标</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for nav in data.global.headerNav %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ nav.linkText or '未设置' }}</td>
+                  <td>{{ nav.linkType or '未设置' }}</td>
+                  <td>
+                    {% if nav.linkType === 'page' and nav._linkPage and nav._linkPage[0] %}
+                      {{ nav._linkPage[0]._url }}
+                    {% elif nav.linkType === 'custom' and nav.linkUrl %}
+                      {{ nav.linkUrl }}
+                    {% elif nav.linkType === 'file' and nav._linkFile and nav._linkFile[0] %}
+                      {{ nav._linkFile[0]._url }}
+                    {% else %}
+                      未设置
+                    {% endif %}
+                  </td>
+                  <td>{% if nav.hasSubmenu %}是{% else %}否{% endif %}</td>
+                  <td>{{ nav.badge or '无' }}</td>
+                  <td>{% if nav.linkTarget and nav.linkTarget[0] %}{{ nav.linkTarget[0] }}{% else %}当前窗口{% endif %}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="alert alert-warning">
+          <h4>⚠️ 没有导航数据</h4>
+          <p>请登录管理界面配置导航数据</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-12">
+      <h2>4. 控制台输出</h2>
+      <div class="alert alert-secondary">
+        <p>打开浏览器开发者工具的控制台，查看以下输出:</p>
+        <script>
+          console.log('=== data.global.headerNav 调试信息 ===');
+          console.log('数据存在:', {% if data.global and data.global.headerNav %}true{% else %}false{% endif %});
+          console.log('数据长度:', {% if data.global.headerNav %}{{ data.global.headerNav.length }}{% else %}0{% endif %});
+          console.log('完整数据:', {{ data.global.headerNav | dump | safe }});
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

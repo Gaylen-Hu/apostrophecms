@@ -1,19 +1,194 @@
 @import "Modules/asset/scss/variables";
 
-.menu {
+// 产品小部件样式
+.product-widget {
   &__list {
     display: grid;
-    grid-gap: 2rem;
-    @media only screen and (min-width: 600px) {
-      &.split {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    @media (min-width: 641px) and (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (min-width: 1025px) {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+    
+    // 分割布局样式
+    &.split {
+      @media (min-width: 600px) {
         grid-template-columns: 1fr 1fr;
       }
     }
   }
+  
   &__item {
-    &__title {
-      display: flex;
-      justify-content: space-between;
+    // 产品卡片基础样式
+    .bg-white.rounded-xl {
+      transition: all 0.3s ease;
+      border: 1px solid #f3f4f6;
+      
+      &:hover {
+        transform: translateY(-4px);
+        border-color: #e5e7eb;
+      }
+    }
+    
+    // 图片区域样式
+    .relative.overflow-hidden {
+      position: relative;
+      
+      img {
+        transition: transform 0.5s ease;
+        
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+      
+      // 图片加载状态
+      &.loading {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+      }
+    }
+    
+    // 标签样式
+    .absolute {
+      z-index: 10;
+      
+      span {
+        backdrop-filter: blur(8px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+    }
+    
+    // 产品信息区域
+    .p-6 {
+      .text-xl {
+        line-height: 1.3;
+        word-break: break-word;
+        
+        a {
+          transition: color 0.3s ease;
+        }
+      }
+      
+      .text-gray-600 {
+        line-height: 1.6;
+        
+        // 文本截断样式
+        .line-clamp-3 {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      }
+      
+      // 价格样式
+      .text-lg {
+        font-weight: 700;
+      }
+    }
+    
+    // 规格标签样式
+    .bg-gray-100 {
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+        background-color: #f3f4f6;
+      }
+    }
+    
+    // 查看详情链接样式
+    .inline-flex.items-center {
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateX(2px);
+        
+        i {
+          transform: translateX(2px);
+        }
+      }
+      
+      i {
+        transition: transform 0.3s ease;
+      }
+    }
+  }
+}
+
+// 加载动画
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// 响应式优化
+@media (max-width: 480px) {
+  .product-widget {
+    &__list {
+      gap: 1rem;
+    }
+    
+    &__item {
+      .relative.overflow-hidden {
+        height: 200px !important;
+      }
+      
+      .p-6 {
+        padding: 1rem !important;
+        
+        .text-xl {
+          font-size: 1.125rem;
+        }
+      }
+    }
+  }
+}
+
+// 高对比度模式支持
+@media (prefers-contrast: high) {
+  .product-widget {
+    &__item {
+      .bg-white.rounded-xl {
+        border: 2px solid #000000;
+      }
+      
+      .absolute span {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+      }
+    }
+  }
+}
+
+// 减少动画模式支持
+@media (prefers-reduced-motion: reduce) {
+  .product-widget {
+    &__item {
+      .bg-white.rounded-xl,
+      .relative.overflow-hidden img,
+      .inline-flex.items-center {
+        transition: none;
+        
+        &:hover {
+          transform: none;
+        }
+      }
     }
   }
 }

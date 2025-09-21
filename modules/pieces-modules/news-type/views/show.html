@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ data.piece.typeName }} - 新闻类型{% endblock %}
+
+{% block main %}
+<div class="news-type-detail-page">
+  <div class="container mx-auto px-4 py-8">
+    <!-- 面包屑导航 -->
+    <nav class="mb-8">
+      <ol class="flex items-center space-x-2 text-sm text-gray-500">
+        <li><a href="/" class="hover:text-gray-700">首页</a></li>
+        <li><i class="fa-solid fa-chevron-right text-xs"></i></li>
+        <li><a href="/news-types" class="hover:text-gray-700">新闻类型</a></li>
+        <li><i class="fa-solid fa-chevron-right text-xs"></i></li>
+        <li class="text-gray-900">{{ data.piece.typeName }}</li>
+      </ol>
+    </nav>
+
+    <!-- 新闻类型详情 -->
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <!-- 头部信息 -->
+      <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6 text-white">
+        <div class="flex items-center">
+          <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mr-6">
+            <i class="fa-solid {{ data.piece.icon }} text-2xl"></i>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold mb-2">{{ data.piece.typeName }}</h1>
+            <p class="text-blue-100">{{ data.piece.title }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 内容区域 -->
+      <div class="p-8">
+        <!-- 状态信息 -->
+        <div class="flex flex-wrap gap-4 mb-8">
+          <div class="flex items-center">
+            <span class="text-sm font-medium text-gray-700 mr-2">状态:</span>
+            {% if data.piece.isActive %}
+              <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                <i class="fa-solid fa-check-circle mr-1"></i>启用
+              </span>
+            {% else %}
+              <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm">
+                <i class="fa-solid fa-times-circle mr-1"></i>禁用
+              </span>
+            {% endif %}
+          </div>
+
+          <div class="flex items-center">
+            <span class="text-sm font-medium text-gray-700 mr-2">首页显示:</span>
+            {% if data.piece.showOnHomepage %}
+              <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                <i class="fa-solid fa-home mr-1"></i>是
+              </span>
+            {% else %}
+              <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm">
+                <i class="fa-solid fa-home mr-1"></i>否
+              </span>
+            {% endif %}
+          </div>
+
+          <div class="flex items-center">
+            <span class="text-sm font-medium text-gray-700 mr-2">排序:</span>
+            <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm">
+              {{ data.piece.sortOrder }}
+            </span>
+          </div>
+        </div>
+
+        <!-- 类型描述 -->
+        {% if data.piece.description %}
+          <div class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">类型描述</h2>
+            <div class="prose max-w-none">
+              {{ apos.area(data.piece, 'description') }}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- 颜色配置 -->
+        <div class="mb-8">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">颜色配置</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">类型颜色</label>
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded border mr-3" 
+                     style="background-color: {{ data.piece.color }};"></div>
+                <span class="text-sm text-gray-600">{{ data.piece.color }}</span>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">背景颜色</label>
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded border mr-3" 
+                     style="background-color: {{ data.piece.backgroundColor }};"></div>
+                <span class="text-sm text-gray-600">{{ data.piece.backgroundColor }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 相关新闻 -->
+        <div class="mb-8">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">相关新闻</h2>
+          <div class="bg-gray-50 rounded-lg p-6">
+            <p class="text-gray-600 mb-4">此类型的新闻将显示在这里</p>
+            <a href="/news?type={{ data.piece._id }}" 
+               class="inline-flex items-center text-blue-600 hover:text-blue-800">
+              <i class="fa-solid fa-external-link-alt mr-2"></i>
+              查看所有相关新闻
+            </a>
+          </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="flex gap-4">
+          <a href="{{ data.piece._url }}?edit=1" 
+             class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors duration-200">
+            <i class="fa-solid fa-edit mr-2"></i>编辑类型
+          </a>
+          <a href="/admin/pieces/news-type" 
+             class="bg-gray-600 text-white px-6 py-3 rounded-md hover:bg-gray-700 transition-colors duration-200">
+            <i class="fa-solid fa-list mr-2"></i>返回列表
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

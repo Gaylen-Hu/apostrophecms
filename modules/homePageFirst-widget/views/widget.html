@@ -1,0 +1,37 @@
+{% import "button.html" as buttonFrag %}
+<section
+  class="relative h-screen flex items-center justify-center overflow-hidden"
+>
+  <div class="absolute inset-0 z-0">
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-800/70 z-10"
+    ></div>
+    {% set backgroundImage = apos.image.first(data.widget.backgroundImage) %}
+    <img
+      src="{{ apos.attachment.url(backgroundImage, {size: 'full'}) }}"
+      alt="{{ backgroundImage.title }}"
+      class="w-full h-full object-cover"
+    />
+  </div>
+  <div class="container mx-auto px-4 md:px-6 z-10 text-center">
+    <div style="opacity: 1; transform: none">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+        {% area data.widget, 'title' %}
+      </h1>
+      <p class="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
+        {% area data.widget, 'subtitle' %}
+      </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          {% for button in data.widget.buttons %}
+            {% render buttonFrag.render(button) %}
+          {% endfor %}
+        </div>
+    </div>
+    <div
+      class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce"
+      style="opacity: 1"
+    >
+      <i class="fa-solid fa-chevron-down text-white text-2xl"></i>
+    </div>
+  </div>
+</section>

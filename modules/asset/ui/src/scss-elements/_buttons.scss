@@ -27,6 +27,43 @@
   font-size: 1.25rem;
 }
 
+// 实心主色调按钮
+.btn--solid-primary {
+  background: #2563eb; // bg-blue-600
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  &:hover {
+    background: #1d4ed8; // hover:bg-blue-700
+    transform: scale(1.05);
+    color: white;
+    text-decoration: none;
+  }
+}
+
+// 空心按钮
+.btn--outline {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1); // hover:bg-white/10
+    color: white;
+    text-decoration: none;
+  }
+}
+
+// 保持原有的样式
 .btn--primary,
 .my-form__submit {
   background: $primary;
@@ -44,6 +81,5 @@
   color: $btn-secondary-text;
   &:hover {
     color: $primary;
-    background: lighten($secondary, 5%);
   }
 }

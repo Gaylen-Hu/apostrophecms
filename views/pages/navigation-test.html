@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block title %}导航测试页面{% endblock %}
+
+{% block main %}
+<div class="container py-5">
+  <h1>导航数据测试页面</h1>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <h2>全局数据调试</h2>
+      <pre>{{ data.global | dump(2) }}</pre>
+    </div>
+    
+    <div class="col-md-6">
+      <h2>头部导航数据</h2>
+      {% if data.global.headerNav %}
+        <ul>
+          {% for nav in data.global.headerNav %}
+            <li>
+              <strong>{{ nav.linkText }}</strong>
+              <ul>
+                <li>链接类型: {{ nav.linkType }}</li>
+                <li>链接文本: {{ nav.linkText }}</li>
+                <li>有子菜单: {{ nav.hasSubmenu }}</li>
+                {% if nav.badge %}
+                  <li>徽章: {{ nav.badge }}</li>
+                {% endif %}
+                {% if nav.linkType === 'page' and nav._linkPage %}
+                  <li>页面: {{ nav._linkPage[0].title if nav._linkPage[0] else '无' }}</li>
+                {% elif nav.linkType === 'custom' %}
+                  <li>自定义URL: {{ nav.linkUrl }}</li>
+                {% endif %}
+                {% if nav.submenuItems %}
+                  <li>子菜单项目:
+                    <ul>
+                      {% for subItem in nav.submenuItems %}
+                        <li>{{ subItem.linkText }} ({{ subItem.linkType }})</li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                {% endif %}
+              </ul>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>没有找到头部导航数据</p>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-12">
+      <h2>页面树数据</h2>
+      {% if data.home and data.home._children %}
+        <ul>
+          {% for page in data.home._children %}
+            <li>
+              <strong>{{ page.title }}</strong> - 
+              <a href="{{ page._url }}">{{ page._url }}</a>
+              (可见性: {{ page.visibility }})
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>没有找到页面树数据</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

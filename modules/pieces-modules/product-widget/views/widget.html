@@ -1,12 +1,131 @@
 {% set splitClass = 'split' if data.widget.style === 'split'%}
-<section data-aos="{{ data.widget.animationEffects }}" class="menu container widget-my-spacing">
+<section data-aos="{{ data.widget.animationEffects }}" class="product-widget container widget-my-spacing">
   {% area data.widget, 'headingIntro' %}
 
-  <div class="menu__list {{ splitClass }}">
+  <div class="product-widget__list {{ splitClass }}">
     {% for item in data.widget._menuItems %}
-      <div class="menu__item {{ splitClass }}">
-        <div class="menu__item__title h6">{{ item.title }} <span>{{ data.widget.currencySybmol }}{{ item.price }}</span></div>
-        <div class="menu__item__description">{{ item.description }}</div>
+      <div class="product-widget__item {{ splitClass }}" style="opacity: 1; transform: none;">
+        <!-- 产品卡片容器 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full" style="transform: none;">
+          
+          <!-- 产品图片区域 -->
+          <div class="relative overflow-hidden h-60">
+            {% if item.productImage %}
+              {% set productImg = apos.image.first(item.productImage) %}
+              {% if productImg %}
+                <img 
+                  src="{{ apos.attachment.url(productImg, { size: 'full' }) }}" 
+                  alt="{{ productImg.title or item.productName }}"
+                  class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                  loading="lazy"
+                >
+              {% else %}
+                <!-- 默认占位图片 -->
+                <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <i class="fa-solid fa-image text-gray-400 text-4xl"></i>
+                </div>
+              {% endif %}
+            {% else %}
+              <!-- 默认占位图片 -->
+              <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                <i class="fa-solid fa-image text-gray-400 text-4xl"></i>
+              </div>
+            {% endif %}
+
+            <!-- 产品类型标签 -->
+            {% if item._productType %}
+              <div class="absolute top-3 left-3">
+                <span 
+                  class="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full"
+                  style="background-color: {{ item._productType.color or '#2563eb' }};"
+                >
+                  {% if item._productType.icon %}
+                    <i class="{{ item._productType.icon }} mr-1"></i>
+                  {% endif %}
+                  {{ item._productType.typeName }}
+                </span>
+              </div>
+            {% endif %}
+
+            <!-- 特色产品标识 -->
+            {% if item.isFeatured %}
+              <div class="absolute top-3 right-3">
+                <span class="bg-yellow-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                  <i class="fa-solid fa-star mr-1"></i>
+                  特色
+                </span>
+              </div>
+            {% endif %}
+
+            <!-- 库存状态 -->
+            {% if not item.inStock %}
+              <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <span class="bg-red-600 text-white px-4 py-2 rounded-lg font-medium">
+                  <i class="fa-solid fa-times-circle mr-2"></i>
+                  暂时缺货
+                </span>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- 产品信息区域 -->
+          <div class="p-6 flex-grow flex flex-col">
+            <!-- 产品标题和价格 -->
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="text-xl font-bold text-gray-800 flex-1">
+                <a href="{{ item._url }}" class="hover:text-blue-600 transition-colors duration-300">
+                  {{ item.productName or item.title }}
+                </a>
+              </h3>
+              <div class="ml-4 text-right">
+                <div class="text-lg font-bold text-blue-600">
+                  {{ data.widget.currencySybmol or '¥' }}{{ item.price }}
+                </div>
+                {% if item.inStock %}
+                  <div class="text-xs text-green-600 mt-1">
+                    <i class="fa-solid fa-check-circle mr-1"></i>
+                    有库存
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 产品描述 -->
+            {% if item.productDescription %}
+              <div class="text-gray-600 mb-4 flex-grow">
+                <div class="line-clamp-3">
+                  {% area item, 'productDescription' %}
+                </div>
+              </div>
+            {% endif %}
+
+            <!-- 产品规格预览 -->
+            {% if item.specifications and item.specifications.length > 0 %}
+              <div class="mb-4">
+                <div class="flex flex-wrap gap-2">
+                  {% for spec in item.specifications %}
+                    {% if loop.index <= 3 %}
+                      <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
+                        {{ spec.name }}: {{ spec.value }}
+                      </span>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+
+            <!-- 查看详情链接 -->
+            <div class="mt-auto">
+              <a 
+                href="{{ item._url }}" 
+                class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                查看详情
+                <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     {% endfor %}
   </div>

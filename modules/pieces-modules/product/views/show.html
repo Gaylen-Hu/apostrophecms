@@ -1,0 +1,207 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="product-detail">
+  <div class="container mx-auto px-4 py-8">
+    <!-- 面包屑导航 -->
+    <nav class="mb-8">
+      <ol class="flex items-center space-x-2 text-sm text-gray-500">
+        <li><a href="/" class="hover:text-blue-600">首页</a></li>
+        <li><i class="fa-solid fa-chevron-right text-xs"></i></li>
+        <li><a href="/products" class="hover:text-blue-600">产品</a></li>
+        {% if data.piece._productType %}
+          <li><i class="fa-solid fa-chevron-right text-xs"></i></li>
+          <li><a href="{{ data.piece._productType._url }}" class="hover:text-blue-600">{{ data.piece._productType.typeName }}</a></li>
+        {% endif %}
+        <li><i class="fa-solid fa-chevron-right text-xs"></i></li>
+        <li class="text-gray-900">{{ data.piece.productName or data.piece.title }}</li>
+      </ol>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- 产品图片 -->
+      <div class="product-images">
+        {% if data.piece.productImage %}
+          {% set productImg = apos.image.first(data.piece.productImage) %}
+          {% if productImg %}
+            <div class="aspect-w-1 aspect-h-1 rounded-lg overflow-hidden shadow-lg">
+              <img 
+                src="{{ apos.attachment.url(productImg, { size: 'full' }) }}" 
+                alt="{{ productImg.title or data.piece.productName }}"
+                class="w-full h-full object-cover"
+              >
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="aspect-w-1 aspect-h-1 rounded-lg overflow-hidden shadow-lg bg-gray-200 flex items-center justify-center">
+            <i class="fa-solid fa-image text-gray-400 text-4xl"></i>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- 产品信息 -->
+      <div class="product-info">
+        <!-- 产品类型标签 -->
+        {% if data.piece._productType %}
+          <div class="mb-4">
+            <span 
+              class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+              style="background-color: {{ data.piece._productType.color or '#2563eb' }}20; color: {{ data.piece._productType.color or '#2563eb' }};"
+            >
+              {% if data.piece._productType.icon %}
+                <i class="{{ data.piece._productType.icon }} mr-2"></i>
+              {% endif %}
+              {{ data.piece._productType.typeName }}
+            </span>
+          </div>
+        {% endif %}
+
+        <!-- 产品名称 -->
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          {{ data.piece.productName or data.piece.title }}
+        </h1>
+
+        <!-- 价格 -->
+        <div class="mb-6">
+          <span class="text-3xl font-bold text-blue-600">
+            ¥{{ data.piece.price }}
+          </span>
+        </div>
+
+        <!-- 库存状态 -->
+        <div class="mb-6">
+          {% if data.piece.inStock %}
+            <span class="inline-flex items-center text-green-600 font-medium">
+              <i class="fa-solid fa-check-circle mr-2"></i>
+              有库存
+            </span>
+          {% else %}
+            <span class="inline-flex items-center text-red-600 font-medium">
+              <i class="fa-solid fa-times-circle mr-2"></i>
+              缺货
+            </span>
+          {% endif %}
+        </div>
+
+        <!-- 产品介绍 -->
+        {% if data.piece.productDescription %}
+          <div class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">产品介绍</h2>
+            <div class="prose prose-gray max-w-none">
+              {% area data.piece, 'productDescription' %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- 产品规格 -->
+        {% if data.piece.specifications and data.piece.specifications.length > 0 %}
+          <div class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">产品规格</h2>
+            <div class="bg-gray-50 rounded-lg p-6">
+              <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {% for spec in data.piece.specifications %}
+                  <div>
+                    <dt class="font-medium text-gray-900">{{ spec.name }}</dt>
+                    <dd class="text-gray-600">{{ spec.value }}</dd>
+                  </div>
+                {% endfor %}
+              </dl>
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- 特色产品标识 -->
+        {% if data.piece.isFeatured %}
+          <div class="mb-6">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+              <i class="fa-solid fa-star mr-2"></i>
+              特色产品
+            </span>
+          </div>
+        {% endif %}
+
+        <!-- 操作按钮 -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button 
+            class="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-300 {% if not data.piece.inStock %}opacity-50 cursor-not-allowed{% endif %}"
+            {% if not data.piece.inStock %}disabled{% endif %}
+          >
+            {% if data.piece.inStock %}
+              <i class="fa-solid fa-shopping-cart mr-2"></i>
+              立即购买
+            {% else %}
+              <i class="fa-solid fa-times mr-2"></i>
+              暂时缺货
+            {% endif %}
+          </button>
+          
+          <button class="flex-1 bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-300">
+            <i class="fa-solid fa-heart mr-2"></i>
+            收藏
+          </button>
+        </div>
+
+        <!-- 联系信息 -->
+        <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+          <p class="text-blue-800 text-sm">
+            <i class="fa-solid fa-phone mr-2"></i>
+            如需了解更多产品信息，请联系我们的销售团队
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 相关产品推荐 -->
+    {% if data.piece._productType and data.piece._productType._products %}
+      <div class="mt-16">
+        <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">
+          相关产品推荐
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {% for relatedProduct in data.piece._productType._products %}
+            {% if relatedProduct._id !== data.piece._id %}
+              <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                {% if relatedProduct.productImage %}
+                  {% set relatedImg = apos.image.first(relatedProduct.productImage) %}
+                  {% if relatedImg %}
+                    <img 
+                      src="{{ apos.attachment.url(relatedImg, { size: 'one-half' }) }}" 
+                      alt="{{ relatedImg.title or relatedProduct.productName }}"
+                      class="w-full h-48 object-cover"
+                    >
+                  {% endif %}
+                {% endif %}
+                
+                <div class="p-4">
+                  <h3 class="font-semibold text-gray-900 mb-2">
+                    <a 
+                      href="{{ relatedProduct._url }}" 
+                      class="hover:text-blue-600 transition-colors duration-300"
+                    >
+                      {{ relatedProduct.productName or relatedProduct.title }}
+                    </a>
+                  </h3>
+                  
+                  <div class="flex items-center justify-between">
+                    <span class="text-lg font-bold text-blue-600">
+                      ¥{{ relatedProduct.price }}
+                    </span>
+                    
+                    {% if relatedProduct.inStock %}
+                      <span class="text-green-600 text-xs">
+                        <i class="fa-solid fa-check-circle mr-1"></i>
+                        有库存
+                      </span>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="product-type-detail">
+  <div class="container mx-auto px-4 py-8">
+    <!-- 产品类型头部 -->
+    <div class="text-center mb-8">
+      {% if data.piece.icon %}
+        <div 
+          class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4"
+          style="background-color: {{ data.piece.color or '#2563eb' }}; color: white;"
+        >
+          <i class="{{ data.piece.icon }} text-2xl"></i>
+        </div>
+      {% endif %}
+      
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        {{ data.piece.title }}
+      </h1>
+      
+      {% if data.piece.typeName %}
+        <p class="text-xl text-gray-600 mb-6">
+          {{ data.piece.typeName }}
+        </p>
+      {% endif %}
+      
+      {% if data.piece.description %}
+        <div class="max-w-3xl mx-auto text-gray-600 leading-relaxed">
+          {% area data.piece, 'description' %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- 该类型下的产品列表 -->
+    {% if data.piece._products %}
+      <div class="mt-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">
+          该类型的产品
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {% for product in data.piece._products %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              {% if product.productImage %}
+                {% set productImg = apos.image.first(product.productImage) %}
+                {% if productImg %}
+                  <div class="aspect-w-16 aspect-h-9">
+                    <img 
+                      src="{{ apos.attachment.url(productImg, { size: 'one-half' }) }}" 
+                      alt="{{ productImg.title or product.productName }}"
+                      class="w-full h-48 object-cover"
+                    >
+                  </div>
+                {% endif %}
+              {% endif %}
+              
+              <div class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                  <a 
+                    href="{{ product._url }}" 
+                    class="hover:text-blue-600 transition-colors duration-300"
+                  >
+                    {{ product.productName or product.title }}
+                  </a>
+                </h3>
+                
+                {% if product.productDescription %}
+                  <div class="text-gray-600 mb-4 text-sm line-clamp-3">
+                    {% area product, 'productDescription' %}
+                  </div>
+                {% endif %}
+                
+                <div class="flex items-center justify-between">
+                  <span class="text-xl font-bold text-blue-600">
+                    ¥{{ product.price }}
+                  </span>
+                  
+                  {% if product.inStock %}
+                    <span class="text-green-600 text-sm font-medium">
+                      <i class="fa-solid fa-check-circle mr-1"></i>
+                      有库存
+                    </span>
+                  {% else %}
+                    <span class="text-red-600 text-sm font-medium">
+                      <i class="fa-solid fa-times-circle mr-1"></i>
+                      缺货
+                    </span>
+                  {% endif %}
+                </div>
+                
+                <a 
+                  href="{{ product._url }}" 
+                  class="mt-4 inline-block w-full text-center bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300"
+                >
+                  查看详情
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+
+{% block title %}导航调试页面{% endblock %}
+
+{% block main %}
+<div class="container py-5">
+  <h1>导航数据调试</h1>
+  
+  <div class="row">
+    <div class="col-12">
+      <h2>1. 检查全局数据是否存在</h2>
+      {% if data.global %}
+        <div class="alert alert-success">
+          ✅ data.global 存在
+        </div>
+        <p><strong>网站标题:</strong> {{ data.global.title or '未设置' }}</p>
+      {% else %}
+        <div class="alert alert-danger">
+          ❌ data.global 不存在
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-12">
+      <h2>2. 检查 headerNav 数据</h2>
+      {% if data.global.headerNav %}
+        <div class="alert alert-success">
+          ✅ data.global.headerNav 存在
+        </div>
+        <p><strong>导航项目数量:</strong> {{ data.global.headerNav.length }}</p>
+        
+        {% if data.global.headerNav.length > 0 %}
+          <h3>导航项目详情:</h3>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>链接文本</th>
+                  <th>链接类型</th>
+                  <th>链接地址</th>
+                  <th>有子菜单</th>
+                  <th>徽章</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for nav in data.global.headerNav %}
+                  <tr>
+                    <td>{{ nav.linkText or '未设置' }}</td>
+                    <td>{{ nav.linkType or '未设置' }}</td>
+                    <td>
+                      {% if nav.linkType === 'page' and nav._linkPage and nav._linkPage[0] %}
+                        {{ nav._linkPage[0]._url }}
+                      {% elif nav.linkType === 'custom' and nav.linkUrl %}
+                        {{ nav.linkUrl }}
+                      {% else %}
+                        未设置
+                      {% endif %}
+                    </td>
+                    <td>{% if nav.hasSubmenu %}是{% else %}否{% endif %}</td>
+                    <td>{{ nav.badge or '无' }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="alert alert-warning">
+            ⚠️ headerNav 数组为空
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="alert alert-danger">
+          ❌ data.global.headerNav 不存在
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-12">
+      <h2>3. 原始数据输出</h2>
+      <pre class="bg-light p-3" style="max-height: 400px; overflow-y: auto;">{{ data.global | dump(2) }}</pre>
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-12">
+      <h2>4. 测试导航渲染</h2>
+      <div class="border p-3">
+        <h4>使用我们的导航片段:</h4>
+        {% import 'fragments/navigation.html' as navigation %}
+        {% render navigation.mainNavigation(data) %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

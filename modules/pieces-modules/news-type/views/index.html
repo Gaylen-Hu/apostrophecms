@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ data.page.title }}{% endblock %}
+
+{% block main %}
+<div class="news-type-page">
+  <div class="container mx-auto px-4 py-8">
+    <!-- 页面标题 -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">新闻类型管理</h1>
+      <p class="text-xl text-gray-600">管理新闻分类和类型</p>
+    </div>
+
+    <!-- 新闻类型列表 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for piece in data.pieces %}
+        <div class="news-type-card bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+          <div class="p-6">
+            <!-- 类型图标和颜色 -->
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center mr-4"
+                   style="background-color: {{ piece.backgroundColor }}; color: {{ piece.color }};">
+                <i class="fa-solid {{ piece.icon }} text-xl"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-gray-900">{{ piece.typeName }}</h3>
+                <p class="text-sm text-gray-500">{{ piece.title }}</p>
+              </div>
+            </div>
+
+            <!-- 类型描述 -->
+            {% if piece.description %}
+              <div class="mb-4">
+                {{ apos.area(piece, 'description') }}
+              </div>
+            {% endif %}
+
+            <!-- 状态标签 -->
+            <div class="flex flex-wrap gap-2 mb-4">
+              {% if piece.isActive %}
+                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                  <i class="fa-solid fa-check-circle mr-1"></i>启用
+                </span>
+              {% else %}
+                <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">
+                  <i class="fa-solid fa-times-circle mr-1"></i>禁用
+                </span>
+              {% endif %}
+
+              {% if piece.showOnHomepage %}
+                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                  <i class="fa-solid fa-home mr-1"></i>首页显示
+                </span>
+              {% endif %}
+
+              <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">
+                <i class="fa-solid fa-sort mr-1"></i>排序: {{ piece.sortOrder }}
+              </span>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="flex gap-2">
+              <a href="{{ piece._url }}" 
+                 class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md text-center hover:bg-blue-700 transition-colors duration-200">
+                <i class="fa-solid fa-eye mr-2"></i>查看详情
+              </a>
+              <a href="{{ piece._url }}?edit=1" 
+                 class="flex-1 bg-gray-600 text-white px-4 py-2 rounded-md text-center hover:bg-gray-700 transition-colors duration-200">
+                <i class="fa-solid fa-edit mr-2"></i>编辑
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- 空状态 -->
+    {% if not data.pieces.length %}
+      <div class="text-center py-12">
+        <div class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+          <i class="fa-solid fa-newspaper text-3xl text-gray-400"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">暂无新闻类型</h3>
+        <p class="text-gray-600 mb-6">开始创建您的第一个新闻类型</p>
+        <a href="/admin/pieces/news-type" 
+           class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors duration-200">
+          <i class="fa-solid fa-plus mr-2"></i>创建新闻类型
+        </a>
+      </div>
+    {% endif %}
+
+    <!-- 分页 -->
+    {% if data.totalPages > 1 %}
+      <div class="mt-12">
+        {{ apos.pager.render({
+          page: data.currentPage,
+          total: data.totalPages,
+          module: data.piece._type
+        }, data.url) }}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

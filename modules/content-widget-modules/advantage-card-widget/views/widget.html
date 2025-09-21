@@ -1,0 +1,25 @@
+<section class="advantage-card-widget advantage-card-widget--{{ data.widget.cardStyle }} advantage-card-widget--{{ data.widget.animation }}" 
+         data-advantage-card-widget
+         {% if data.widget.hoverEffect %}data-hover-effect{% endif %}>
+  <div class="advantage-card-widget__card"
+       style="background-color: {{ data.widget.backgroundColor }};"
+       data-animation="{{ data.widget.animation }}">
+    
+    <!-- 图标区域 -->
+    <div class="advantage-card-widget__icon" 
+         style="color: {{ data.widget.iconColor }};">
+      <i class="fa-solid {{ data.widget.icon }}"></i>
+    </div>
+    
+    <!-- 内容区域 -->
+    <div class="advantage-card-widget__content">
+      {% if data.widget.title %}
+        <h3 class="advantage-card-widget__title">{{ data.widget.title }}</h3>
+      {% endif %}
+      
+      {% if data.widget.description %}
+        <p class="advantage-card-widget__description">{{ data.widget.description }}</p>
+      {% endif %}
+    </div>
+  </div>
+</section>

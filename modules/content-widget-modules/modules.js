@@ -1,3 +1,11 @@
+/*
+ * @Author: xinyuHu hxyrkcy@outlook.com
+ * @Date: 2025-09-20 17:25:54
+ * @LastEditors: xinyuHu hxyrkcy@outlook.com
+ * @LastEditTime: 2025-09-21 14:58:44
+ * @FilePath: \my-app\modules\content-widget-modules\modules.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 export default {
   // Widgets
   'accordion-widget': {},
@@ -25,5 +33,10 @@ export default {
   'pricing-widget': {},
   'side-by-side-widget': {},
   'image-widget': {},
-  'rich-text-widget': {}
+  'rich-text-widget': {},
+  'homePageFirst-widget': {},
+  'basiclayout-widget': {},
+  'advantage-card-widget': {},
+  'news-hero-widget': {},
+  
 };

@@ -1,0 +1,40 @@
+{% import "ui.html" as ui %}
+{% import "button.html" as buttonFrag %}
+
+{# 主要导航菜单 #}
+{% fragment mainNavigation(data) %}
+<header class="fixed w-full z-50 transition-all duration-300 bg-transparent py-4"><div class="container mx-auto px-4 md:px-6"><div class="flex items-center justify-between"><a class="flex items-center" href="/" data-discover="true"><div class="text-blue-600 font-bold text-2xl">烂笔头机械</div></a><nav class="hidden md:flex items-center space-x-8"><a class="text-gray-800 hover:text-blue-600 font-medium transition-colors" href="/" data-discover="true"></a><a class="text-gray-800 hover:text-blue-600 font-medium transition-colors" href="/about" data-discover="true">关于我们</a><a class="text-gray-800 hover:text-blue-600 font-medium transition-colors" href="/products" data-discover="true">产品中心</a><a class="text-gray-800 hover:text-blue-600 font-medium transition-colors" href="/news" data-discover="true">新闻资讯</a><a class="text-gray-800 hover:text-blue-600 font-medium transition-colors" href="/contact" data-discover="true">联系我们</a></nav><div class="hidden md:block"><a href="/contact" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition-all transform hover:scale-105">立即联系</a></div><button class="md:hidden text-gray-800 focus:outline-none"><i class="fa-solid fa-bars text-2xl"></i></button></div></div></header>
+
+{% endfragment %}
+
+{# 基于页面树的导航 #}
+{% fragment pageTreeNavigation(data) %}
+<nav class="page-tree-nav" role="navigation" aria-label="Page tree navigation">
+  <div class="page-tree-container">
+    <ul class="page-tree-list">
+      {% for page in data.home._children %}
+        {% if page.visibility === 'public' %}
+          <li class="page-tree-item">
+            <a href="{{ page._url }}" 
+               class="page-tree-link {% if data.page and data.page._id === page._id %}active{% endif %}">
+              {{ page.title }}
+            </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</nav>
+{% endfragment %}
+
+{# 面包屑导航 #}
+{% fragment breadcrumbNavigation(data) %}
+{% if data.page and data.page._ancestors.length>1000 %}
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <ol class="breadcrumb-list">
+     
+     
+    </ol>
+  </nav>
+{% endif %}
+{% endfragment %}

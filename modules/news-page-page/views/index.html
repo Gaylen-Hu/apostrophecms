@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+{% import "@apostrophecms/pager:macros.html" as pager with context %}
+
+{% block main %}
+<main class="flex-grow">
+  {# 英雄区域 #}
+  <section class="relative py-20 bg-blue-900 text-white">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute inset-0 bg-blue-900/90 z-10"></div>
+      <img src="https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_16_9&prompt=news%20background%2C%20newspaper%20concept%2C%20information%20technology%2C%20digital%20news&sign=6360eeb3a3a9e289b0b6fd979b01a808" alt="新闻资讯" class="w-full h-full object-cover">
+    </div>
+    <div class="container mx-auto px-4 md:px-6 relative z-10">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">新闻资讯</h1>
+      <p class="text-xl text-blue-100 max-w-3xl">了解公司最新动态和行业资讯</p>
+    </div>
+  </section>
+
+  {# 筛选器 #}
+  <section class="py-12 bg-white shadow-md">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        {# 搜索框 #}
+        <div class="w-full md:w-1/3">
+          <div class="relative">
+            <input type="text" placeholder="搜索新闻..." class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" value="">
+            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+          </div>
+        </div>
+        
+        {# 分类筛选按钮 #}
+        <div class="w-full md:w-2/3">
+          <div class="flex flex-wrap gap-2">
+            <a href="{{ data.page._url | build({category: null, isFeatured: null}) }}" 
+               class="px-6 py-2 rounded-full text-sm font-medium transition-all {% if not data.query.category and not data.query.isFeatured %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+              全部新闻
+            </a>
+            {% if data.piecesFilters.category %}
+              {% for choice in data.piecesFilters.category.choices %}
+                <a href="{{ data.page._url | build({category: choice.value, isFeatured: null}) }}" 
+                   class="px-6 py-2 rounded-full text-sm font-medium transition-all {% if data.query.category === choice.value %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+                  {{ choice.label }}
+                </a>
+              {% endfor %}
+            {% endif %}
+            <a href="{{ data.page._url | build({category: null, isFeatured: true}) }}" 
+               class="px-6 py-2 rounded-full text-sm font-medium transition-all {% if data.query.isFeatured === 'true' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+              置顶新闻
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# 文章列表 #}
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for piece in data.pieces %}
+          <article class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full" style="opacity: 1; transform: none;">
+            {# 展示图 #}
+            <div class="relative h-48 overflow-hidden">
+              {% if piece.featuredImage %}
+                {% area piece, 'featuredImage' %}
+              {% else %}
+                <img src="https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_4_3&prompt=smart%20manufacturing%20industry%2C%20industrial%204.0%2C%20future%20factory%2C%20modern%20manufacturing&sign=389911069388e3d3347f7b27d6d0a396" alt="{{ piece.title }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+              {% endif %}
+              
+              {# 分类标签 #}
+              <div class="absolute top-3 left-3 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                {{ piece.category }}
+              </div>
+            </div>
+            
+            {# 文章内容 #}
+            <div class="p-6 flex flex-col flex-grow">
+              {# 发布日期 #}
+              <div class="flex items-center text-gray-500 text-sm mb-3">
+                <i class="fa-solid fa-calendar mr-2"></i>
+                {{ piece.publishDate | date('YYYY-MM-DD') }}
+              </div>
+              
+              {# 文章标题 #}
+              <h3 class="text-xl font-bold text-gray-800 mb-3 hover:text-blue-600 transition-colors">
+                <a class="hover:underline" href="{{ piece._url }}" data-discover="true">
+                  {{ piece.title }}
+                </a>
+              </h3>
+              
+              {# 文章摘要 #}
+              {% if piece.excerpt %}
+                <p class="text-gray-600 mb-4 flex-grow">
+                  {{ piece.excerpt }}
+                </p>
+              {% else %}
+                <p class="text-gray-600 mb-4 flex-grow">
+                  点击阅读更多内容...
+                </p>
+              {% endif %}
+              
+              {# 阅读更多按钮 #}
+              <a class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-auto self-start" href="{{ piece._url }}" data-discover="true">
+                阅读全文 
+                <span class="sr-only">关于 {{ piece.title }}</span>
+                <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+              </a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+
+      {# 分页器 #}
+      {% if data.totalPages > 1 %}
+        <div class="flex justify-center mt-16">
+          <nav class="inline-flex rounded-md shadow">
+            {{ pager.render({ 
+              page: data.currentPage, 
+              total: data.totalPages,
+              shown: 5,
+              class: 'px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50'
+            }, data.url) }}
+          </nav>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  {# 订阅区域 #}
+  <section class="py-20 bg-blue-600 text-white">
+    <div class="container mx-auto px-4 md:px-6 text-center">
+      <div style="opacity: 1; transform: none;">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">订阅新闻资讯</h2>
+        <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">订阅我们的新闻资讯，及时了解公司动态和行业信息</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+          <input type="email" placeholder="您的邮箱地址" class="flex-grow px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
+          <button class="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-3 px-6 rounded-lg transition-all">订阅</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

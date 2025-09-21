@@ -1,0 +1,175 @@
+// 优势卡片小部件样式
+.advantage-card-widget {
+  &__card {
+    border-radius: 0.75rem;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    
+    // 默认样式
+    &--default {
+      border: 1px solid #e5e7eb;
+    }
+    
+    // 边框样式
+    &--bordered {
+      border: 2px solid #3b82f6;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    }
+    
+    // 阴影样式
+    &--shadow {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      
+      &:hover {
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+    }
+    
+    // 渐变样式
+    &--gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      
+      .advantage-card-widget__title {
+        color: white;
+      }
+      
+      .advantage-card-widget__description {
+        color: rgba(255, 255, 255, 0.9);
+      }
+    }
+  }
+  
+  &__icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    background-color: rgba(59, 130, 246, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+  }
+  
+  &__description {
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0;
+  }
+  
+  // 悬停效果
+  &[data-hover-effect] {
+    .advantage-card-widget__card {
+      cursor: pointer;
+      
+      &:hover {
+        transform: translateY(-4px);
+        
+        .advantage-card-widget__icon {
+          transform: scale(1.1);
+          background-color: rgba(59, 130, 246, 0.2);
+        }
+      }
+    }
+  }
+  
+  // 动画效果
+  &--fade {
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
+  }
+  
+  &--slide {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: slideIn 0.8s ease forwards;
+  }
+  
+  &--scale {
+    opacity: 0;
+    transform: scale(0.9);
+    animation: scaleIn 0.8s ease forwards;
+  }
+  
+  // 响应式设计
+  @media (max-width: 768px) {
+    &__card {
+      padding: 1.5rem;
+    }
+    
+    &__icon {
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    
+    &__title {
+      font-size: 1.125rem;
+    }
+  }
+}
+
+// 动画关键帧
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// 暗色主题支持
+@media (prefers-color-scheme: dark) {
+  .advantage-card-widget {
+    &__card {
+      &--default {
+        background-color: #374151;
+        border-color: #4b5563;
+      }
+    }
+    
+    &__title {
+      color: #f9fafb;
+    }
+    
+    &__description {
+      color: #d1d5db;
+    }
+  }
+}

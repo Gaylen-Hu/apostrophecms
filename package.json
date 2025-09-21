@@ -41,12 +41,14 @@
   "author": "Apostrophe Technologies",
   "license": "MIT",
   "dependencies": {
+    "@apostrophecms/blog": "^1.0.6",
     "@apostrophecms/form": "^1.1.1",
     "@apostrophecms/i18n-static": "^1.1.1",
     "@apostrophecms/open-graph": "^1.2.1",
     "@apostrophecms/seo": "^1.2.0",
     "@apostrophecms/sitemap": "^1.0.2",
     "@apostrophecms/vite": "^1.0.0",
+    "@tailwindcss/cli": "^4.1.13",
     "aos": "^2.3.4",
     "apostrophe": "^4.18.0",
     "dotenv": "^16.0.3",
@@ -55,7 +57,8 @@
     "ol": "^7.3.0",
     "photoswipe": "^5.3.7",
     "rfs": "^10.0.0",
-    "swiper": "^9.2.3"
+    "swiper": "^9.2.3",
+    "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
