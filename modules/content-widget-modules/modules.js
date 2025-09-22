@@ -38,5 +38,6 @@ export default {
   'basiclayout-widget': {},
   'advantage-card-widget': {},
   'news-hero-widget': {},
+  'product-card-widget': {},
   
 };

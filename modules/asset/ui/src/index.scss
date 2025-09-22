@@ -22,7 +22,9 @@
 @import "./scss-elements/_button-arrow";
 @import "./scss-elements/_forms";
 @import "aos/dist/aos.css";
-@import "./output.css";
+
+@import "tailwindcss";
+@import "./font-awesome.css";
 
 // apos line-height interferance fix
 .apos-area,
@@ -71,3 +73,4 @@ a {
   padding-top: 3rem;
   padding-bottom: 3rem;
 }
+@import "./output.css";

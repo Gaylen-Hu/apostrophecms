@@ -2,7 +2,7 @@
  * @Author: xinyuHu hxyrkcy@outlook.com
  * @Date: 2025-09-15 18:13:41
  * @LastEditors: xinyuHu hxyrkcy@outlook.com
- * @LastEditTime: 2025-09-20 23:15:27
+ * @LastEditTime: 2025-09-21 22:42:01
  * @FilePath: \my-app\app.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -15,7 +15,6 @@ apostrophe({
   shortName: 'my-app',
   baseUrl: process.env.APOS_BASE_URL || 'http://localhost:3000',
   nestedModuleSubdirs: true,
-  bundles: [ '@apostrophecms/blog' ],
   modules: {
     // Apostrophe module configuration
     // *******************************
@@ -28,8 +27,6 @@ apostrophe({
     // ***********************************************************************
     // `className` options set custom CSS classes for Apostrophe core widgets.
 
-    '@apostrophecms/blog': {},
-    '@apostrophecms/blog-page': {},
     '@apostrophecms/rich-text-widget': {
       options: {}
     },

@@ -3,69 +3,128 @@
 {% block title %}导航测试页面{% endblock %}
 
 {% block main %}
-<div class="container py-5">
-  <h1>导航数据测试页面</h1>
-  
-  <div class="row">
-    <div class="col-md-6">
-      <h2>全局数据调试</h2>
-      <pre>{{ data.global | dump(2) }}</pre>
-    </div>
-    
-    <div class="col-md-6">
-      <h2>头部导航数据</h2>
-      {% if data.global.headerNav %}
-        <ul>
-          {% for nav in data.global.headerNav %}
-            <li>
-              <strong>{{ nav.linkText }}</strong>
-              <ul>
-                <li>链接类型: {{ nav.linkType }}</li>
-                <li>链接文本: {{ nav.linkText }}</li>
-                <li>有子菜单: {{ nav.hasSubmenu }}</li>
-                {% if nav.badge %}
-                  <li>徽章: {{ nav.badge }}</li>
-                {% endif %}
-                {% if nav.linkType === 'page' and nav._linkPage %}
-                  <li>页面: {{ nav._linkPage[0].title if nav._linkPage[0] else '无' }}</li>
-                {% elif nav.linkType === 'custom' %}
-                  <li>自定义URL: {{ nav.linkUrl }}</li>
-                {% endif %}
-                {% if nav.submenuItems %}
-                  <li>子菜单项目:
-                    <ul>
+<div class="min-h-screen bg-gray-50 pt-20">
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold text-gray-900 mb-8">导航功能测试页面</h1>
+      
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">全局配置信息</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="font-medium text-gray-700 mb-2">品牌信息</h3>
+            <ul class="space-y-2 text-sm">
+              <li><strong>网站标题：</strong>{{ data.global.title or '未设置' }}</li>
+              <li><strong>公司简介：</strong>{{ data.global.detail or '未设置' }}</li>
+              <li><strong>Logo：</strong>{{ '已设置' if data.global.logo and data.global.logo.items and data.global.logo.items[0] else '未设置' }}</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-medium text-gray-700 mb-2">联系信息</h3>
+            <ul class="space-y-2 text-sm">
+              <li><strong>邮箱：</strong>{{ data.global.email or '未设置' }}</li>
+              <li><strong>电话：</strong>{{ data.global.phone or '未设置' }}</li>
+              <li><strong>地址：</strong>{{ data.global.address or '未设置' }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">头部导航配置</h2>
+        {% if data.global.headerNav and data.global.headerNav.length > 0 %}
+          <div class="space-y-4">
+            {% for nav in data.global.headerNav %}
+              <div class="border border-gray-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-medium">{{ nav.linkText }}</h3>
+                  {% if nav.badge %}
+                    <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">{{ nav.badge }}</span>
+                  {% endif %}
+                </div>
+                <p class="text-sm text-gray-600 mb-2">
+                  链接类型：{{ nav.linkType }} | 
+                  目标：{{ nav.linkTarget and nav.linkTarget.includes('_blank') ? '新窗口' : '当前窗口' }}
+                </p>
+                {% if nav.hasSubmenu and nav.submenuItems and nav.submenuItems.length > 0 %}
+                  <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-700 mb-1">子菜单：</p>
+                    <ul class="space-y-1">
                       {% for subItem in nav.submenuItems %}
-                        <li>{{ subItem.linkText }} ({{ subItem.linkType }})</li>
+                        <li class="text-sm text-gray-600">• {{ subItem.linkText }}</li>
                       {% endfor %}
                     </ul>
-                  </li>
+                  </div>
                 {% endif %}
-              </ul>
-            </li>
-          {% endfor %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-gray-600">未配置头部导航</p>
+        {% endif %}
+      </div>
+
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">底部导航配置</h2>
+        {% if data.global.footerNav and data.global.footerNav.length > 0 %}
+          <ul class="space-y-2">
+            {% for nav in data.global.footerNav %}
+              <li class="flex items-center space-x-2">
+                <span class="text-sm">{{ nav.linkText }}</span>
+                <span class="text-xs text-gray-500">({{ nav.linkType }})</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-gray-600">未配置底部导航</p>
+        {% endif %}
+      </div>
+
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">头部按钮配置</h2>
+        {% if data.global.headerBtns and data.global.headerBtns.length > 0 %}
+          <div class="space-y-2">
+            {% for btn in data.global.headerBtns %}
+              <div class="flex items-center space-x-2">
+                <span class="text-sm">{{ btn.linkText }}</span>
+                <span class="text-xs text-gray-500">({{ btn.linkType }})</span>
+                {% if btn.style %}
+                  <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">{{ btn.style }}</span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-gray-600">未配置头部按钮</p>
+        {% endif %}
+      </div>
+
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">社交媒体配置</h2>
+        {% if data.global.social and data.global.social.length > 0 %}
+          <div class="flex space-x-4">
+            {% for social in data.global.social %}
+              <div class="flex items-center space-x-2">
+                <i class="fa-brands fa-{{ social.icon }} text-lg"></i>
+                <span class="text-sm">{{ social.icon }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-gray-600">未配置社交媒体</p>
+        {% endif %}
+      </div>
+
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-blue-900 mb-4">测试说明</h2>
+        <ul class="space-y-2 text-blue-800">
+          <li>• 此页面用于测试导航配置是否正确显示</li>
+          <li>• 检查头部导航是否包含子菜单和徽章功能</li>
+          <li>• 验证移动端菜单是否正常工作</li>
+          <li>• 确认底部导航和联系信息是否正确显示</li>
+          <li>• 测试所有链接是否指向正确的目标</li>
         </ul>
-      {% else %}
-        <p>没有找到头部导航数据</p>
-      {% endif %}
-    </div>
-  </div>
-  
-  <div class="row mt-4">
-    <div class="col-12">
-      <h2>页面树数据</h2>
-      {% if data.home and data.home._children %}
-        <ul>
-          {% for page in data.home._children %}
-            <li>
-              <strong>{{ page.title }}</strong> - 
-              <a href="{{ page._url }}">{{ page._url }}</a>
-              (可见性: {{ page.visibility }})
-            </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p>没有找到页面树数据</p>
-      {% endif %}
+      </div>
     </div>
   </div>
 </div>

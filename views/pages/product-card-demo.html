@@ -1,0 +1,201 @@
+{% extends "layout.html" %}
+
+{% block title %}产品卡片小部件演示{% endblock %}
+
+{% block main %}
+<div class="min-h-screen bg-gray-50 pt-20">
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="text-3xl font-bold text-gray-900 mb-8">产品卡片小部件演示</h1>
+      
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">功能特性</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-lg shadow">
+            <i class="fa-solid fa-image text-blue-600 text-2xl mb-2"></i>
+            <h3 class="font-medium">产品图片</h3>
+            <p class="text-sm text-gray-600">支持高质量图片展示</p>
+          </div>
+          <div class="bg-white p-4 rounded-lg shadow">
+            <i class="fa-solid fa-tag text-green-600 text-2xl mb-2"></i>
+            <h3 class="font-medium">分类标签</h3>
+            <p class="text-sm text-gray-600">可自定义颜色和文本</p>
+          </div>
+          <div class="bg-white p-4 rounded-lg shadow">
+            <i class="fa-solid fa-link text-purple-600 text-2xl mb-2"></i>
+            <h3 class="font-medium">详情链接</h3>
+            <p class="text-sm text-gray-600">支持多种链接类型</p>
+          </div>
+          <div class="bg-white p-4 rounded-lg shadow">
+            <i class="fa-solid fa-mobile text-orange-600 text-2xl mb-2"></i>
+            <h3 class="font-medium">响应式设计</h3>
+            <p class="text-sm text-gray-600">完美适配各种设备</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">产品卡片展示</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          {# 示例卡片 1 - 紧固件 #}
+          <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
+            <div class="relative overflow-hidden h-60">
+              <div class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                <i class="fa-solid fa-cog text-blue-600 text-6xl"></i>
+              </div>
+              <div class="absolute top-3 left-3 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                紧固件
+              </div>
+            </div>
+            <div class="p-6 flex-grow flex flex-col">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">精密螺母</h3>
+              <p class="text-gray-600 mb-4 flex-grow">
+                精密加工螺母，配合螺栓使用，确保连接紧固可靠。采用优质材料制造，具有优异的耐腐蚀性和机械性能。
+              </p>
+              <a href="/products/1" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-auto">
+                查看详情
+                <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+              </a>
+            </div>
+          </div>
+
+          {# 示例卡片 2 - 汽车零配件 #}
+          <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
+            <div class="relative overflow-hidden h-60">
+              <div class="w-full h-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
+                <i class="fa-solid fa-car text-green-600 text-6xl"></i>
+              </div>
+              <div class="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                汽车零配件
+              </div>
+            </div>
+            <div class="p-6 flex-grow flex flex-col">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">发动机支架</h3>
+              <p class="text-gray-600 mb-4 flex-grow">
+                高强度发动机支架，有效减少发动机振动，提升驾驶舒适性。经过严格测试，确保产品质量。
+              </p>
+              <a href="/products/2" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-auto">
+                查看详情
+                <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+              </a>
+            </div>
+          </div>
+
+          {# 示例卡片 3 - 阀门 #}
+          <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
+            <div class="relative overflow-hidden h-60">
+              <div class="w-full h-full bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center">
+                <i class="fa-solid fa-wrench text-red-600 text-6xl"></i>
+              </div>
+              <div class="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                阀门
+              </div>
+            </div>
+            <div class="p-6 flex-grow flex flex-col">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">球阀</h3>
+              <p class="text-gray-600 mb-4 flex-grow">
+                高品质球阀，适用于各种流体控制场合。密封性能优异，操作简便，使用寿命长。
+              </p>
+              <a href="/products/3" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-auto">
+                查看详情
+                <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+              </a>
+            </div>
+          </div>
+
+          {# 示例卡片 4 - 水暖管件 #}
+          <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
+            <div class="relative overflow-hidden h-60">
+              <div class="w-full h-full bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
+                <i class="fa-solid fa-pipe text-purple-600 text-6xl"></i>
+              </div>
+              <div class="absolute top-3 left-3 bg-purple-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                水暖管件
+              </div>
+            </div>
+            <div class="p-6 flex-grow flex flex-col">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">铜管接头</h3>
+              <p class="text-gray-600 mb-4 flex-grow">
+                优质铜管接头，耐腐蚀性强，密封性能好。广泛应用于水暖系统中，确保系统稳定运行。
+              </p>
+              <a href="/products/4" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-auto">
+                查看详情
+                <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+              </a>
+            </div>
+          </div>
+
+          {# 示例卡片 5 - 无分类标签 #}
+          <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
+            <div class="relative overflow-hidden h-60">
+              <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                <i class="fa-solid fa-tools text-gray-600 text-6xl"></i>
+              </div>
+            </div>
+            <div class="p-6 flex-grow flex flex-col">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">通用配件</h3>
+              <p class="text-gray-600 mb-4 flex-grow">
+                通用工业配件，适用于多种应用场景。质量可靠，价格合理，是您的理想选择。
+              </p>
+              <a href="/products/5" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-auto">
+                查看详情
+                <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+              </a>
+            </div>
+          </div>
+
+          {# 示例卡片 6 - 长描述 #}
+          <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
+            <div class="relative overflow-hidden h-60">
+              <div class="w-full h-full bg-gradient-to-br from-yellow-100 to-yellow-200 flex items-center justify-center">
+                <i class="fa-solid fa-cogs text-yellow-600 text-6xl"></i>
+              </div>
+              <div class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                机械设备
+              </div>
+            </div>
+            <div class="p-6 flex-grow flex flex-col">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">精密加工设备</h3>
+              <p class="text-gray-600 mb-4 flex-grow">
+                高精度数控加工设备，采用先进的控制系统和精密机械结构。适用于各种复杂零件的加工，具有高精度、高效率、高稳定性的特点。设备操作简便，维护方便，是现代化制造业的理想选择。
+              </p>
+              <a href="/products/6" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-auto">
+                查看详情
+                <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-blue-900 mb-4">使用说明</h2>
+        <div class="space-y-3 text-blue-800">
+          <div class="flex items-start space-x-3">
+            <i class="fa-solid fa-1 text-blue-600 mt-1"></i>
+            <p>在页面编辑器中添加"产品卡片"小部件</p>
+          </div>
+          <div class="flex items-start space-x-3">
+            <i class="fa-solid fa-2 text-blue-600 mt-1"></i>
+            <p>上传产品图片（建议4:3比例）</p>
+          </div>
+          <div class="flex items-start space-x-3">
+            <i class="fa-solid fa-3 text-blue-600 mt-1"></i>
+            <p>填写产品标题和描述信息</p>
+          </div>
+          <div class="flex items-start space-x-3">
+            <i class="fa-solid fa-4 text-blue-600 mt-1"></i>
+            <p>设置分类标签和颜色</p>
+          </div>
+          <div class="flex items-start space-x-3">
+            <i class="fa-solid fa-5 text-blue-600 mt-1"></i>
+            <p>配置详情链接和样式选项</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

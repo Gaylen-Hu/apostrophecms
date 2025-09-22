@@ -22,7 +22,7 @@ export default {
   fields: {
     add: {
       logo: {
-        label: '标志',
+        label: 'logo',
         type: 'area',
         options: {
           max: 1,
@@ -35,6 +35,12 @@ export default {
         type: 'string',
         label: '网站标题',
         required: true
+      },
+      detail: {
+        type: 'string',
+        label: '详情',
+        required: true,
+        help: '公司简短介绍'
       },
       // 邮箱
       email: {
@@ -60,8 +66,8 @@ export default {
         label: '版权',
         required: true
       },
-      // 备案号
-     备案号: {
+      // 备
+      filingNumber: {
         type: 'string',
         label: '备案号',
         required: true
@@ -165,11 +171,15 @@ export default {
     group: {
       brand: {
         label: '品牌',
-        fields: [ 'title', 'logo', 'social' ]
+        fields: [ 'title', 'logo', 'detail', 'social' ]
       },
       navigations: {
         label: '导航',
         fields: [ 'headerNav', 'footerNav', 'headerBtns' ]
+      },
+      basics: {
+        label: '基础',
+        fields: [ 'email', 'phone', 'address', 'copyright', 'filingNumber' ]
       }
     }
   }

@@ -1,0 +1,74 @@
+<!--
+ * @Author: xinyuHu hxyrkcy@outlook.com
+ * @Date: 2025-09-22 11:00:08
+ * @LastEditors: xinyuHu hxyrkcy@outlook.com
+ * @LastEditTime: 2025-09-22 11:00:09
+ * @FilePath: \my-app\modules\content-widget-modules\product-card-widget\views\widget.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+{# 产品卡片小部件 #}
+<div class="product-card-widget bg-white rounded-xl overflow-hidden shadow-lg transition-all duration-300 h-full flex flex-col
+            {% if data.widget.hoverEffect === 'shadow' %}hover:shadow-xl{% endif %}
+            {% if data.widget.cardHeight === 'fixed' %}h-96{% endif %}">
+  
+  {# 图片区域 #}
+  <div class="relative overflow-hidden h-60">
+    {% if data.widget.productImage %}
+        <!-- area -->
+         {% area data.widget, 'productImage' %}
+    {% else %}
+      <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+        <i class="fa-solid fa-image text-gray-400 text-4xl"></i>
+      </div>
+    {% endif %}
+    
+    {# 分类标签 #}
+    {% if data.widget.category %}
+      <div class="absolute top-3 left-3 
+                  {% if data.widget.categoryColor === 'blue' %}bg-blue-600
+                  {% elif data.widget.categoryColor === 'green' %}bg-green-600
+                  {% elif data.widget.categoryColor === 'red' %}bg-red-600
+                  {% elif data.widget.categoryColor === 'yellow' %}bg-yellow-500
+                  {% elif data.widget.categoryColor === 'purple' %}bg-purple-600
+                  {% elif data.widget.categoryColor === 'gray' %}bg-gray-600
+                  {% else %}bg-blue-600{% endif %}
+                  text-white text-xs font-semibold px-3 py-1 rounded-full">
+        {{ data.widget.category }}
+      </div>
+    {% endif %}
+  </div>
+  
+  {# 内容区域 #}
+  <div class="p-6 flex-grow flex flex-col">
+    {# 产品标题 #}
+    {% if data.widget.productTitle %}
+      <h3 class="text-xl font-bold text-gray-800 mb-2 line-clamp-2">
+        {{ data.widget.productTitle }}
+      </h3>
+    {% endif %}
+    
+    {# 产品描述 #}
+    {% if data.widget.productDescription %}
+      <p class="text-gray-600 mb-4 flex-grow line-clamp-3">
+        {{ data.widget.productDescription }}
+      </p>
+    {% endif %}
+    
+    {# 详情链接 #}
+    {% if data.widget.detailLink and data.widget.detailLink.linkText %}
+      {% set linkPath = apos.modules['@apostrophecms/global'].linkPath(data.widget.detailLink) %}
+      <a href="{{ linkPath }}" 
+         class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-auto transition-colors duration-200
+                {% if data.widget.detailLink.linkTarget and data.widget.detailLink.linkTarget.includes('_blank') %}
+                  after:content-['_↗'] after:text-xs
+                {% endif %}"
+         {% if data.widget.detailLink.linkTarget and data.widget.detailLink.linkTarget.includes('_blank') %}
+           target="_blank" rel="noopener"
+         {% endif %}
+         aria-label="查看 {{ data.widget.productTitle or '产品' }} 详情">
+        {{ data.widget.detailLink.linkText }}
+        <i class="fa-solid fa-arrow-right ml-2 text-sm transition-transform duration-200 group-hover:translate-x-1"></i>
+      </a>
+    {% endif %}
+  </div>
+</div>

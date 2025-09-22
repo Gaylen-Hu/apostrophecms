@@ -2,11 +2,279 @@
  * @Author: xinyuHu hxyrkcy@outlook.com
  * @Date: 2025-09-16 16:48:23
  * @LastEditors: xinyuHu hxyrkcy@outlook.com
- * @LastEditTime: 2025-09-16 18:51:08
+ * @LastEditTime: 2025-09-21 19:49:38
  * @FilePath: \my-app\views\fragments\footer.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
-{% import "ui.html" as ui %} {% fragment footer(data) %}
-<footer class="bg-gray-900 text-white pt-16 pb-8"><div class="container mx-auto px-4 md:px-6"><div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12"><div class="md:col-span-1"><h3 class="text-xl font-bold mb-4 text-blue-400">烂笔头机械有限公司</h3><p class="text-gray-400 mb-4">专业从事汽车零部件、阀门、紧固件、水暖管件制造加工的企业。</p><div class="flex space-x-4"><a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-weixin text-xl"></i></a><a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-linkedin text-xl"></i></a><a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-youtube text-xl"></i></a></div></div><div><h4 class="text-lg font-semibold mb-4 text-white">快速链接</h4><ul class="space-y-2"><li><a class="text-gray-400 hover:text-white transition-colors" href="/" data-discover="true">首页</a></li><li><a class="text-gray-400 hover:text-white transition-colors" href="/about" data-discover="true">关于我们</a></li><li><a class="text-gray-400 hover:text-white transition-colors" href="/products" data-discover="true">产品中心</a></li><li><a class="text-gray-400 hover:text-white transition-colors" href="/news" data-discover="true">新闻资讯</a></li><li><a class="text-gray-400 hover:text-white transition-colors" href="/contact" data-discover="true">联系我们</a></li></ul></div><div><h4 class="text-lg font-semibold mb-4 text-white">产品分类</h4><ul class="space-y-2"><li><a href="#" class="text-gray-400 hover:text-white transition-colors">紧固件</a></li><li><a href="#" class="text-gray-400 hover:text-white transition-colors">汽车零配件</a></li><li><a href="#" class="text-gray-400 hover:text-white transition-colors">阀门</a></li><li><a href="#" class="text-gray-400 hover:text-white transition-colors">水暖管件</a></li></ul></div><div><h4 class="text-lg font-semibold mb-4 text-white">联系我们</h4><ul class="space-y-3"><li class="flex items-start"><i class="fa-solid fa-map-marker-alt text-blue-400 mt-1 mr-3"></i><span class="text-gray-400">玉环市坎门街道厂区路4号</span></li><li class="flex items-center"><i class="fa-solid fa-phone text-blue-400 mr-3"></i><span class="text-gray-400">0576-8755XXXX</span></li><li class="flex items-center"><i class="fa-solid fa-envelope text-blue-400 mr-3"></i><span class="text-gray-400">info@woyoumachinery.com</span></li></ul></div></div><div class="border-t border-gray-800 pt-8"><div class="flex flex-col md:flex-row justify-between items-center"><p class="text-gray-500 text-sm mb-4 md:mb-0">© 2025 烂笔头机械有限公司. 保留所有权利.</p><div class="flex space-x-6"><a href="#" class="text-gray-500 hover:text-gray-300 text-sm">隐私政策</a><a href="#" class="text-gray-500 hover:text-gray-300 text-sm">使用条款</a><a href="#" class="text-gray-500 hover:text-gray-300 text-sm">网站地图</a></div></div></div></div></footer>
+{% import "ui.html" as ui %} 
+{% fragment footer(data) %}
+<footer class="bg-gray-900 text-white pt-16 pb-8">
+  <div class="container mx-auto px-4 md:px-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+      {# 公司信息区域 #}
+      <div class="md:col-span-1">
+        {# Logo 和公司名称 #}
+        <div class="flex items-center space-x-3 mb-4">
+          {% if data.global.logo and data.global.logo.items and data.global.logo.items[0] %}
+            <div class="w-12 h-12 flex-shrink-0">
+              {{ apos.image(data.global.logo.items[0]._image, { 
+                size: 'one-sixth',
+                alt: data.global.title or 'Logo'
+              }) }}
+            </div>
+          {% endif %}
+          <h3 class="text-xl font-bold text-blue-400">
+            {{ data.global.title or '网站标题' }}
+          </h3>
+        </div>
+        
+        {# 公司简介 #}
+        <p class="text-gray-400 mb-6 leading-relaxed">
+          {{ data.global.detail or '专业从事汽车零部件、阀门、紧固件、水暖管件制造加工的企业。' }}
+        </p>
+        
+        {# 社交媒体链接 #}
+        <div class="flex space-x-4">
+          {% if data.global.social and data.global.social.length > 0 %}
+            {% for social in data.global.social %}
+              <a href="{{ social.link }}" 
+                 class="text-gray-400 hover:text-white transition-colors transform hover:scale-110" 
+                 target="_blank" 
+                 rel="noopener"
+                 aria-label="{{ social.icon | title }} 社交媒体">
+                {% if social.icon === 'instagram' %}
+                  <i class="fa-brands fa-instagram text-xl"></i>
+                {% elif social.icon === 'facebook' %}
+                  <i class="fa-brands fa-facebook text-xl"></i>
+                {% elif social.icon === 'twitter' %}
+                  <i class="fa-brands fa-twitter text-xl"></i>
+                {% elif social.icon === 'linkedin' %}
+                  <i class="fa-brands fa-linkedin text-xl"></i>
+                {% else %}
+                  <i class="fa-brands fa-{{ social.icon }} text-xl"></i>
+                {% endif %}
+              </a>
+            {% endfor %}
+          {% else %}
+            {# 默认社交媒体图标 #}
+            <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="微信">
+              <i class="fa-brands fa-weixin text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="YouTube">
+              <i class="fa-brands fa-youtube text-xl"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+      {# 快速链接区域 #}
+      <div>
+        <h4 class="text-lg font-semibold mb-4 text-white">快速链接</h4>
+        <ul class="space-y-3">
+          {% if data.global.footerNav and data.global.footerNav.length > 0 %}
+            {% for nav in data.global.footerNav %}
+              {% set path = apos.modules['@apostrophecms/global'].linkPath(nav) %}
+              <li>
+                <a class="text-gray-400 hover:text-white transition-colors flex items-center group"
+                   href="{{ path }}"
+                   data-discover="true"
+                   {% if nav.linkTarget and nav.linkTarget.includes('_blank') %}
+                     target="_blank" rel="noopener"
+                   {% endif %}
+                   aria-label="{{ nav.ariaLabel or nav.linkText }}">
+                  <i class="fa-solid fa-chevron-right text-xs mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                  {{ nav.linkText }}
+                </a>
+              </li>
+            {% endfor %}
+          {% else %}
+            {# 默认快速链接 #}
+            <li>
+              <a class="text-gray-400 hover:text-white transition-colors flex items-center group"
+                 href="/" data-discover="true">
+                <i class="fa-solid fa-chevron-right text-xs mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                首页
+              </a>
+            </li>
+            <li>
+              <a class="text-gray-400 hover:text-white transition-colors flex items-center group"
+                 href="/about" data-discover="true">
+                <i class="fa-solid fa-chevron-right text-xs mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                关于我们
+              </a>
+            </li>
+            <li>
+              <a class="text-gray-400 hover:text-white transition-colors flex items-center group"
+                 href="/products" data-discover="true">
+                <i class="fa-solid fa-chevron-right text-xs mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                产品中心
+              </a>
+            </li>
+            <li>
+              <a class="text-gray-400 hover:text-white transition-colors flex items-center group"
+                 href="/news" data-discover="true">
+                <i class="fa-solid fa-chevron-right text-xs mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                新闻资讯
+              </a>
+            </li>
+            <li>
+              <a class="text-gray-400 hover:text-white transition-colors flex items-center group"
+                 href="/contact" data-discover="true">
+                <i class="fa-solid fa-chevron-right text-xs mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                联系我们
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold mb-4 text-white">产品分类</h4>
+        <ul class="space-y-2">
+          {% if data.global.productCategories %}
+            {% for category in data.global.productCategories %}
+              <li>
+                <a href="{{ apos.helper.linkPath(category) }}"
+                 class="text-white hover:text-white transition-colors"
+                  {% if category.linkType === 'custom' and category.linkUrl and category.linkUrl.startsWith('http') %}
+                    target="_blank" rel="noopener"
+                  {% endif %}
+                  >{{ category.linkText }}</a
+                >
+              </li>
+            {% endfor %}
+          {% else %}
+            <li>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors"
+                >紧固件</a
+              >
+            </li>
+            <li>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors"
+                >汽车零配件</a
+              >
+            </li>
+            <li>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors"
+                >阀门</a
+              >
+            </li>
+            <li>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors"
+                >水暖管件</a
+              >
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+      {# 联系我们区域 #}
+      <div>
+        <h4 class="text-lg font-semibold mb-4 text-white">联系我们</h4>
+        <ul class="space-y-4">
+          {# 地址信息 #}
+          {% if data.global.address %}
+            <li class="flex items-start group">
+              <i class="fa-solid fa-map-marker-alt text-blue-400 mt-1 mr-3 flex-shrink-0 group-hover:text-white transition-colors"></i>
+              <span class="text-gray-400 group-hover:text-white transition-colors leading-relaxed">
+                {{ data.global.address }}
+              </span>
+            </li>
+          {% endif %}
+          
+          {# 电话信息 #}
+          {% if data.global.phone %}
+            <li class="flex items-center group">
+              <i class="fa-solid fa-phone text-blue-400 mr-3 flex-shrink-0 group-hover:text-white transition-colors"></i>
+              <a href="tel:{{ data.global.phone }}" 
+                 class="text-gray-400 group-hover:text-white transition-colors hover:underline">
+                {{ data.global.phone }}
+              </a>
+            </li>
+          {% endif %}
+          
+          {# 邮箱信息 #}
+          {% if data.global.email %}
+            <li class="flex items-center group">
+              <i class="fa-solid fa-envelope text-blue-400 mr-3 flex-shrink-0 group-hover:text-white transition-colors"></i>
+              <a href="mailto:{{ data.global.email }}" 
+                 class="text-gray-400 group-hover:text-white transition-colors hover:underline">
+                {{ data.global.email }}
+              </a>
+            </li>
+          {% endif %}
+          
+          {# 如果没有配置联系信息，显示默认信息 #}
+          {% if not data.global.address and not data.global.phone and not data.global.email %}
+            <li class="flex items-start group">
+              <i class="fa-solid fa-map-marker-alt text-blue-400 mt-1 mr-3 flex-shrink-0 group-hover:text-white transition-colors"></i>
+              <span class="text-gray-400 group-hover:text-white transition-colors leading-relaxed">
+                玉环市坎门街道厂区路4号
+              </span>
+            </li>
+            <li class="flex items-center group">
+              <i class="fa-solid fa-phone text-blue-400 mr-3 flex-shrink-0 group-hover:text-white transition-colors"></i>
+              <a href="tel:0576-8755XXXX" 
+                 class="text-gray-400 group-hover:text-white transition-colors hover:underline">
+                0576-8755XXXX
+              </a>
+            </li>
+            <li class="flex items-center group">
+              <i class="fa-solid fa-envelope text-blue-400 mr-3 flex-shrink-0 group-hover:text-white transition-colors"></i>
+              <a href="mailto:info@woyoumachinery.com" 
+                 class="text-gray-400 group-hover:text-white transition-colors hover:underline">
+                info@woyoumachinery.com
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+    {# 底部版权信息 #}
+    <div class="border-t border-gray-800 pt-8">
+      <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        {# 版权信息 #}
+        <div class="text-center md:text-left">
+          <p class="text-gray-500 text-sm mb-2">
+            {{ data.global.copyright or '© 2025 网站标题. 保留所有权利.' }}
+          </p>
+          {% if data.global.filingNumber %}
+            <p class="text-gray-600 text-xs">
+              备案号：{{ data.global.filingNumber }}
+            </p>
+          {% endif %}
+        </div>
+        
+        {# 底部链接 #}
+        <div class="flex flex-wrap justify-center md:justify-end space-x-6">
+          {% if data.global.footerNav and data.global.footerNav.length > 0 %}
+            {# 使用底部导航作为法律链接 #}
+            {% for link in data.global.footerNav %}
+              {% set path = apos.modules['@apostrophecms/global'].linkPath(link) %}
+              <a href="{{ path }}" 
+                 class="text-gray-500 hover:text-gray-300 text-sm transition-colors"
+                 {% if link.linkTarget and link.linkTarget.includes('_blank') %}
+                   target="_blank" rel="noopener"
+                 {% endif %}>
+                {{ link.linkText }}
+              </a>
+            {% endfor %}
+          {% else %}
+            {# 默认法律链接 #}
+            <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">
+              隐私政策
+            </a>
+            <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">
+              使用条款
+            </a>
+            <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">
+              网站地图
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
 
 {% endfragment %}

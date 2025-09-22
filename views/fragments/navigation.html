@@ -3,7 +3,144 @@
 
 {# 主要导航菜单 #}
 {% fragment mainNavigation(data) %}
-<header class="fixed w-full z-50 transition-all duration-300 bg-transparent py-4"><div class="container mx-auto px-4 md:px-6"><div class="flex items-center justify-between"><a class="flex items-center" href="/" data-discover="true"><div class="text-blue-600 font-bold text-2xl">烂笔头机械</div></a><nav class="hidden md:flex items-center space-x-8"><a class="text-gray-800 hover:text-blue-600 font-medium transition-colors" href="/" data-discover="true"></a><a class="text-gray-800 hover:text-blue-600 font-medium transition-colors" href="/about" data-discover="true">关于我们</a><a class="text-gray-800 hover:text-blue-600 font-medium transition-colors" href="/products" data-discover="true">产品中心</a><a class="text-gray-800 hover:text-blue-600 font-medium transition-colors" href="/news" data-discover="true">新闻资讯</a><a class="text-gray-800 hover:text-blue-600 font-medium transition-colors" href="/contact" data-discover="true">联系我们</a></nav><div class="hidden md:block"><a href="/contact" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition-all transform hover:scale-105">立即联系</a></div><button class="md:hidden text-gray-800 focus:outline-none"><i class="fa-solid fa-bars text-2xl"></i></button></div></div></header>
+<header class="fixed w-full z-50 transition-all duration-300 bg-white/95 backdrop-blur-sm shadow-sm py-4">
+  <div class="container mx-auto px-4 md:px-6">
+    <div class="flex items-center justify-between">
+      {# Logo 和网站标题 #}
+      <a class="flex items-center space-x-3" href="/" data-discover="true">
+        {% if data.global.logo and data.global.logo.items and data.global.logo.items[0] %}
+          <div class="w-10 h-10 flex-shrink-0">
+            {{ apos.image(data.global.logo.items[0]._image, { 
+              size: 'one-sixth',
+              alt: data.global.title or 'Logo'
+            }) }}
+          </div>
+        {% endif %}
+        <div class="text-blue-600 font-bold text-2xl">
+          {{ data.global.title or '网站标题' }}
+        </div>
+      </a>
+
+      {# 主导航菜单 #}
+      <nav class="hidden md:flex items-center space-x-8">
+        {% for nav in data.global.headerNav %}
+          {% set path = apos.modules['@apostrophecms/global'].linkPath(nav) %}
+          <div class="relative group">
+            <a href="{{ path }}" 
+               class="text-gray-800 hover:text-blue-600 font-medium transition-colors flex items-center space-x-1"
+               {% if nav.linkTarget and nav.linkTarget.includes('_blank') %}target="_blank"{% endif %}
+               aria-label="{{ nav.ariaLabel or nav.linkText }}">
+              <span>{{ nav.linkText }}</span>
+              {% if nav.badge %}
+                <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full ml-1">{{ nav.badge }}</span>
+              {% endif %}
+              {% if nav.hasSubmenu and nav.submenuItems and nav.submenuItems.length > 0 %}
+                <i class="fa-solid fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+              {% endif %}
+            </a>
+            
+            {# 子菜单 #}
+            {% if nav.hasSubmenu and nav.submenuItems and nav.submenuItems.length > 0 %}
+              <div class="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div class="py-2">
+                  {% for subItem in nav.submenuItems %}
+                    {% set subPath = apos.modules['@apostrophecms/global'].linkPath(subItem) %}
+                    <a href="{{ subPath }}" 
+                       class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                       {% if subItem.linkTarget and subItem.linkTarget.includes('_blank') %}target="_blank"{% endif %}>
+                      {{ subItem.linkText }}
+                    </a>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </nav>
+
+      {# 头部按钮 #}
+      <div class="hidden md:flex items-center space-x-4">
+        {% for btn in data.global.headerBtns %}
+          {% set btnPath = apos.modules['@apostrophecms/global'].linkPath(btn) %}
+          <a href="{{ btnPath }}" 
+             class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition-all transform hover:scale-105 font-medium"
+             {% if btn.linkTarget and btn.linkTarget.includes('_blank') %}target="_blank"{% endif %}>
+            {{ btn.linkText }}
+          </a>
+        {% endfor %}
+      </div>
+
+      {# 移动端菜单按钮 #}
+      <button class="md:hidden text-gray-800 focus:outline-none" id="mobile-menu-btn">
+        <i class="fa-solid fa-bars text-2xl"></i>
+      </button>
+    </div>
+
+    {# 移动端菜单 #}
+    <div class="md:hidden mt-4 hidden" id="mobile-menu">
+      <div class="bg-white rounded-lg shadow-lg p-4">
+        <nav class="space-y-2">
+          {% for nav in data.global.headerNav %}
+            {% set path = apos.modules['@apostrophecms/global'].linkPath(nav) %}
+            <div>
+              <a href="{{ path }}" 
+                 class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                 {% if nav.linkTarget and nav.linkTarget.includes('_blank') %}target="_blank"{% endif %}>
+                <span class="flex items-center justify-between">
+                  <span>{{ nav.linkText }}</span>
+                  {% if nav.badge %}
+                    <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">{{ nav.badge }}</span>
+                  {% endif %}
+                </span>
+              </a>
+              
+              {# 移动端子菜单 #}
+              {% if nav.hasSubmenu and nav.submenuItems and nav.submenuItems.length > 0 %}
+                <div class="ml-4 mt-2 space-y-1">
+                  {% for subItem in nav.submenuItems %}
+                    {% set subPath = apos.modules['@apostrophecms/global'].linkPath(subItem) %}
+                    <a href="{{ subPath }}" 
+                       class="block px-4 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                       {% if subItem.linkTarget and subItem.linkTarget.includes('_blank') %}target="_blank"{% endif %}>
+                      {{ subItem.linkText }}
+                    </a>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </nav>
+        
+        {# 移动端按钮 #}
+        {% if data.global.headerBtns and data.global.headerBtns.length > 0 %}
+          <div class="mt-4 pt-4 border-t border-gray-200">
+            {% for btn in data.global.headerBtns %}
+              {% set btnPath = apos.modules['@apostrophecms/global'].linkPath(btn) %}
+              <a href="{{ btnPath }}" 
+                 class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+                 {% if btn.linkTarget and btn.linkTarget.includes('_blank') %}target="_blank"{% endif %}>
+                {{ btn.linkText }}
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', function() {
+      mobileMenu.classList.toggle('hidden');
+    });
+  }
+});
+</script>
 
 {% endfragment %}
 

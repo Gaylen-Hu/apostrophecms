@@ -5,6 +5,10 @@ A starter kit for building marketing-themed websites. Add hero blocks, feature l
 <video src="https://user-images.githubusercontent.com/1889830/257867010-767f9ab6-3472-4057-8780-38cb9d861640.mp4" controls="controls" style="max-width: 730px;">
 </video>
 
+npx @tailwindcss/cli -i modules/asset/ui/src/input.css -o modules/asset/ui/src/output.css --watch
+
+npx @tailwindcss/cli -i modules/asset/ui/src/input.css -o modules/asset/ui/src/output.css --watch
+
 ## Get started
 ### Method 1
 1. Install the project using the [Apostrophe CLI tool]() using:
