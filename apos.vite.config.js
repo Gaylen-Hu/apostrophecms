@@ -1,7 +1,15 @@
+/*
+ * @Author: xinyuHu hxyrkcy@outlook.com
+ * @Date: 2025-09-22 19:38:12
+ * @LastEditors: xinyuHu hxyrkcy@outlook.com
+ * @LastEditTime: 2025-09-22 19:41:05
+ * @FilePath: \my-app\apos.vite.config.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  server: {
+  server: { 
     // 允许外部访问，绑定到所有网络接口
     host: '0.0.0.0',
     // 或者指定特定的IP地址
@@ -45,7 +53,6 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         // 全局SCSS变量
-        additionalData: `@import "./modules/asset/ui/src/variables.scss";`
       }
     }
   },
