@@ -2,7 +2,7 @@
  * @Author: xinyuHu hxyrkcy@outlook.com
  * @Date: 2025-09-22 19:38:12
  * @LastEditors: xinyuHu hxyrkcy@outlook.com
- * @LastEditTime: 2025-09-22 19:41:05
+ * @LastEditTime: 2025-09-22 20:07:54
  * @FilePath: \my-app\apos.vite.config.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -12,12 +12,7 @@ export default defineConfig({
   server: { 
     // 允许外部访问，绑定到所有网络接口
     host: '0.0.0.0',
-    // 或者指定特定的IP地址
-    // host: '192.168.1.100', // 替换为您的实际IP地址
-    port: 3000,
-    // 启用HTTPS（可选）
-    // https: true,
-    // 配置代理（如果需要）
+    port: 3001,
     proxy: {
       // 代理API请求到ApostropheCMS后端
       '/api': {
@@ -32,16 +27,7 @@ export default defineConfig({
     // 输出目录
     outDir: 'dist',
     // 资源内联阈值
-    assetsInlineLimit: 4096,
-    // 代码分割
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['vue', 'vue-router'],
-          utils: ['lodash', 'moment']
-        }
-      }
-    }
+    assetsInlineLimit: 4096
   },
   // 开发工具配置
   define: {
@@ -58,6 +44,6 @@ export default defineConfig({
   },
   // 优化配置
   optimizeDeps: {
-    include: ['vue', 'vue-router', 'lodash']
+    include: ['aos', 'swiper', 'photoswipe']
   }
 });
