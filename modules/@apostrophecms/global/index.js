@@ -118,8 +118,42 @@ export default {
           }
         }
       },
+      footerNavtitle: {
+        label: '底部导航项目标题',
+        type: 'string',
+        required: true
+      },
       footerNav: {
         label: '底部导航项目',
+        type: 'array',
+        titleField: 'linkText',
+        limit: 5,
+        fields: {
+          add: {
+            ...linkSchema
+          }
+        }
+      },
+      productCategories: {
+        label: '产品分类',
+        type: 'array',
+        titleField: 'linkText',
+        limit: 8,
+        fields: {
+          add: {
+            ...linkSchema
+          }
+        }
+      },
+
+      footerNav2title: {
+        label: '底部导航项目2标题',
+        type: 'string',
+        required: true
+      },
+
+      footerNav2: {
+        label: '底部导航项目2',
         type: 'array',
         titleField: 'linkText',
         limit: 5,
@@ -223,7 +257,7 @@ export default {
       },
       navigations: {
         label: '导航',
-        fields: [ 'headerNav', 'footerNav', 'headerBtns' ]
+        fields: [ 'headerNav', 'footerNavtitle', 'footerNav', 'footerNav2title', 'footerNav2', 'productCategories', 'headerBtns' ]
       },
       basics: {
         label: '基础',

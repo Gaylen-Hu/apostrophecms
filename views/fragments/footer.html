@@ -2,7 +2,7 @@
  * @Author: xinyuHu hxyrkcy@outlook.com
  * @Date: 2025-09-16 16:48:23
  * @LastEditors: xinyuHu hxyrkcy@outlook.com
- * @LastEditTime: 2025-09-24 10:29:43
+ * @LastEditTime: 2025-09-24 20:12:19
  * @FilePath: \my-app\views\fragments\footer.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -15,10 +15,15 @@
       <div class="md:col-span-1">
         {# Logo 和公司名称 #}
         <div class="flex items-center space-x-3 mb-4">
-        
-          <h3 class="text-xl font-bold text-blue-400">
-            {{ data.global.title or '网站标题' }}
-          </h3>
+          {% if data.global.logo and data.global.logo.items and data.global.logo.items.length > 0 %}
+            {% set logoImage = apos.image.first(data.global.logo) %}
+            {% if logoImage %}
+              <img src="{{ apos.attachment.url(logoImage, { size: 'one-third' }) }}" 
+                   alt="{{ data.global.title or '网站Logo' }}" 
+                   class="h-8 w-auto">
+            {% endif %}
+          {% endif %}
+       
         </div>
         
         {# 公司简介 #}
@@ -64,7 +69,7 @@
       </div>
       {# 快速链接区域 #}
       <div>
-        <h4 class="text-lg font-semibold mb-4 text-white">快速链接</h4>
+        <h4 class="text-lg font-semibold mb-4 text-white">{{ data.global.footerNavtitle or '快速链接' }}</h4>
         <ul class="space-y-3">
           {% if data.global.footerNav and data.global.footerNav.length > 0 %}
             {% for nav in data.global.footerNav %}
@@ -123,14 +128,15 @@
         </ul>
       </div>
       <div>
-        <h4 class="text-lg font-semibold mb-4 text-white">产品分类</h4>
+        <h4 class="text-lg font-semibold mb-4 text-white">{{ data.global.footerNav2title or '产品分类' }}</h4>
         <ul class="space-y-2">
-          {% if data.global.productCategories %}
-            {% for category in data.global.productCategories %}
+          {% if data.global.footerNav2 and data.global.footerNav2.length > 0 %}
+            {% for category in data.global.footerNav2 %}
+              {% set path = apos.modules['@apostrophecms/global'].linkPath(category) %}
               <li>
-                <a href="{{ apos.helper.linkPath(category) }}"
-                 class="text-white hover:text-white transition-colors"
-                  {% if category.linkType === 'custom' and category.linkUrl and category.linkUrl.startsWith('http') %}
+                <a href="{{ path }}"
+                 class="text-gray-400 hover:text-white transition-colors"
+                  {% if category.linkTarget and category.linkTarget.includes('_blank') %}
                     target="_blank" rel="noopener"
                   {% endif %}
                   >{{ category.linkText }}</a
@@ -269,10 +275,11 @@
     </div>
   </div>
   <style>
-    a{
+
+    footer a{
       color: #9aa2ae;
     }
-    a:hover{
+    footer  a:hover{
       color: #fff;
     }
   </style>
