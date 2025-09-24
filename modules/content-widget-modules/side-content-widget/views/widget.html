@@ -1,0 +1,57 @@
+<div class="side-content-widget" style="color: {{ data.widget.textColor }}">
+  {# 标题 #}
+  <h3 class="side-content-widget__title side-content-widget__title--{{ data.widget.titleSize }}">
+    {{ data.widget.title }}
+  </h3>
+  
+  {# 描述 #}
+  {% if data.widget.description %}
+    <p class="side-content-widget__description">
+      {{ data.widget.description }}
+    </p>
+  {% endif %}
+  
+  {# 特性列表 #}
+  {% if data.widget.features and data.widget.features.length > 0 %}
+    <ul class="side-content-widget__features">
+      {% for feature in data.widget.features %}
+        <li class="side-content-widget__feature">
+          <i class="side-content-widget__icon side-content-widget__icon--{{ feature.icon }}"></i>
+          <span class="side-content-widget__feature-text">{{ feature.text }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  
+  {# 行动按钮 #}
+  {% if data.widget.button and data.widget.button.linkText and data.widget.button.url %}
+    {% set buttonPath = apos.modules['@apostrophecms/global'].linkPath(data.widget.button) %}
+    <a href="{{ buttonPath }}" 
+       class="side-content-widget__button 
+              side-content-widget__button--{{ data.widget.button.style }}
+              side-content-widget__button--{{ data.widget.button.size }}"
+       {% if data.widget.button.linkTarget and data.widget.button.linkTarget.includes('_blank') %}
+         target="_blank" rel="noopener"
+       {% endif %}
+       aria-label="{{ data.widget.button.ariaLabel or data.widget.button.linkText }}">
+      
+      {% if data.widget.button.showIcon and data.widget.button.iconPosition == 'left' %}
+        <i class="side-content-widget__button-icon side-content-widget__button-icon--left">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+        </i>
+      {% endif %}
+      
+      <span class="side-content-widget__button-text">{{ data.widget.button.linkText }}</span>
+      
+      {% if data.widget.button.showIcon and data.widget.button.iconPosition == 'right' %}
+        <i class="side-content-widget__button-icon side-content-widget__button-icon--right">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+        </i>
+      {% endif %}
+    </a>
+  {% endif %}
+</div>

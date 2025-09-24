@@ -40,4 +40,6 @@ export default {
   'news-hero-widget': {},
   'product-card-widget': {},
   'carousel-widget': {},
+  'side-layout-widget': {},
+  'side-content-widget': {},
 };

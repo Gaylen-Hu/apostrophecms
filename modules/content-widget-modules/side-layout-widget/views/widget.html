@@ -1,0 +1,57 @@
+<!--
+ * @Author: xinyuHu hxyrkcy@outlook.com
+ * @Date: 2025-09-24 22:16:49
+ * @LastEditors: xinyuHu hxyrkcy@outlook.com
+ * @LastEditTime: 2025-09-24 22:28:19
+ * @FilePath: \my-app\modules\content-widget-modules\side-layout-widget\views\widget.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<section
+  data-aos="{{ data.widget.animationEffects }}"
+  class="side-layout-widget widget-my-spacing"
+  data-side-layout
+  data-layout-direction="{{ data.widget.layoutDirection }}"
+>
+  <div class="side-layout-widget__container 
+              side-layout-widget__container--{{ data.widget.padding }}
+              side-layout-widget__container--{{ data.widget.borderRadius }}
+              side-layout-widget__container--{{ data.widget.shadow }}"
+       style="
+       padding: 0;
+         {% if data.widget.backgroundGradient %}
+           background: linear-gradient(to right, {{ data.widget.gradientFrom }}, {{ data.widget.gradientTo }});
+         {% else %}
+           background-color: {{ data.widget.backgroundColor }};
+         {% endif %}
+       ">
+    
+    {% if data.widget.title %}
+      <div class="side-layout-widget__header">
+        <h2 class="side-layout-widget__title">{{ data.widget.title }}</h2>
+      </div>
+    {% endif %}
+
+    <div class="side-layout-widget__content 
+                side-layout-widget__content--{{ data.widget.layoutDirection }}">
+      
+      {% if data.widget.layoutDirection == 'left-content' %}
+        {# 左内容右图片布局 #}
+        <div class="side-layout-widget__left" style="padding: 1.8em;">
+          {% area data.widget, 'contentArea' %}
+        </div>
+        <div class="side-layout-widget__right">
+          {% area data.widget, 'imageArea' %}
+        </div>
+      {% else %}
+        {# 左图片右内容布局 #}
+        <div class="side-layout-widget__left" style="padding: 1.8em;">
+          {% area data.widget, 'imageArea' %}
+        </div>
+        <div class="side-layout-widget__right">
+          {% area data.widget, 'contentArea' %}
+        </div>
+      {% endif %}
+      
+    </div>
+  </div>
+</section>
