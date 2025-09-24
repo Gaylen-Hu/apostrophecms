@@ -1,0 +1,503 @@
+// 轮播图小部件样式 - shadcn UI风格
+.carousel-widget {
+  --border-radius: 0.5rem;
+  --border-radius-lg: 0.75rem;
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+
+  &__container {
+    position: relative;
+    width: 100%;
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+  }
+
+  &__title {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: hsl(var(--foreground));
+    margin-bottom: 0.5rem;
+  }
+
+  &__description {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: hsl(var(--muted-foreground));
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+
+  // 轮播图容器
+  &__carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--border-radius-lg);
+  }
+
+  // 轮播轨道
+  &__track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    will-change: transform;
+  }
+
+  // 单个幻灯片
+  &__slide {
+    position: relative;
+    min-width: 100%;
+    height: 500px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    // 高度变体
+    &--small {
+      height: 400px;
+    }
+
+    &--medium {
+      height: 500px;
+    }
+
+    &--large {
+      height: 600px;
+    }
+
+    &--xlarge {
+      height: 700px;
+    }
+
+    &--fullscreen {
+      height: 100vh;
+      min-height: 500px;
+    }
+
+    // 过渡动画
+    &--slide {
+      // 滑动动画由JavaScript控制
+    }
+
+    &--fade {
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+
+      &.active {
+        opacity: 1;
+      }
+    }
+
+    &--zoom {
+      transform: scale(1.1);
+      transition: transform 0.5s ease-in-out;
+
+      &.active {
+        transform: scale(1);
+      }
+    }
+  }
+
+  // 遮罩层
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  // 内容区域
+  &__content {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+    max-width: 1200px;
+    width: 100%;
+
+    &--left {
+      text-align: left;
+      justify-content: flex-start;
+    }
+
+    &--center {
+      text-align: center;
+      justify-content: center;
+    }
+
+    &--right {
+      text-align: right;
+      justify-content: flex-end;
+    }
+  }
+
+  &__text-container {
+    max-width: 600px;
+  }
+
+  &__slide-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__slide-description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+
+    @media (max-width: 768px) {
+      font-size: 1.125rem;
+    }
+  }
+
+  &__button {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    border: 2px solid currentColor;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: transparent;
+    cursor: pointer;
+
+    &:hover {
+      background: currentColor;
+      color: #000;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+  }
+
+  // 导航箭头
+  &__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    color: hsl(var(--foreground));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    backdrop-filter: blur(4px);
+    box-shadow: var(--shadow);
+
+    &:hover {
+      background: rgba(255, 255, 255, 1);
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: var(--shadow-lg);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: translateY(-50%);
+
+      &:hover {
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+      }
+    }
+
+    &--prev {
+      left: 1rem;
+    }
+
+    &--next {
+      right: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      width: 2.5rem;
+      height: 2.5rem;
+
+      &--prev {
+        left: 0.5rem;
+      }
+
+      &--next {
+        right: 0.5rem;
+      }
+    }
+  }
+
+  // 指示点
+  &__dots {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 2rem;
+    backdrop-filter: blur(4px);
+  }
+
+  &__dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: var(--transition);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.8);
+      transform: scale(1.2);
+    }
+
+    &--active {
+      background: rgba(255, 255, 255, 1);
+      transform: scale(1.2);
+    }
+  }
+
+  // 播放/暂停按钮
+  &__play-pause {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    backdrop-filter: blur(4px);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+      transform: scale(1.1);
+    }
+  }
+
+  &__play-icon,
+  &__pause-icon {
+    transition: var(--transition);
+  }
+
+  // 响应式设计
+  @media (max-width: 1024px) {
+    &__slide {
+      &--xlarge {
+        height: 600px;
+      }
+
+      &--fullscreen {
+        height: 80vh;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    &__header {
+      margin-bottom: 1.5rem;
+    }
+
+    &__title {
+      font-size: 1.5rem;
+    }
+
+    &__description {
+      font-size: 1rem;
+    }
+
+    &__content {
+      padding: 1.5rem;
+    }
+
+    &__slide {
+      &--large {
+        height: 500px;
+      }
+
+      &--xlarge {
+        height: 500px;
+      }
+
+      &--fullscreen {
+        height: 70vh;
+      }
+    }
+
+    &__slide-title {
+      font-size: 1.75rem;
+    }
+
+    &__slide-description {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    &__button {
+      padding: 0.625rem 1.5rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__content {
+      padding: 1rem;
+    }
+
+    &__slide {
+      &--small {
+        height: 300px;
+      }
+
+      &--medium {
+        height: 350px;
+      }
+
+      &--large {
+        height: 400px;
+      }
+
+      &--xlarge {
+        height: 450px;
+      }
+
+      &--fullscreen {
+        height: 60vh;
+        min-height: 300px;
+      }
+    }
+
+    &__slide-title {
+      font-size: 1.5rem;
+    }
+
+    &__slide-description {
+      font-size: 0.875rem;
+    }
+
+    &__arrow {
+      width: 2rem;
+      height: 2rem;
+
+      &--prev {
+        left: 0.25rem;
+      }
+
+      &--next {
+        right: 0.25rem;
+      }
+    }
+
+    &__dots {
+      bottom: 1rem;
+    }
+
+    &__play-pause {
+      top: 0.5rem;
+      right: 0.5rem;
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+}
+
+// 动画关键帧
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// 工具类
+.carousel-widget__slide--slide {
+  &.slide-in-left {
+    animation: slideInLeft 0.5s ease-out;
+  }
+
+  &.slide-in-right {
+    animation: slideInRight 0.5s ease-out;
+  }
+}
+
+.carousel-widget__slide--fade {
+  &.fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+}
+
+.carousel-widget__slide--zoom {
+  &.zoom-in {
+    animation: zoomIn 0.5s ease-out;
+  }
+}

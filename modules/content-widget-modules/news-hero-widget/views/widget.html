@@ -6,10 +6,12 @@
   <!-- 背景图片区域 -->
   <div class="news-hero-widget__background">
     {% if data.widget.backgroundImage %}
-      {{ apos.image(data.widget.backgroundImage, { 
-        size: 'full',
-        class: 'news-hero-widget__bg-image'
-      }) }}
+      {% set backgroundImg = apos.image.first(data.widget.backgroundImage) %}
+      {% if backgroundImg %}
+        <img src="{{ apos.attachment.url(backgroundImg, { size: 'full' }) }}" 
+             alt="{{ backgroundImg.title or '新闻背景' }}" 
+             class="news-hero-widget__bg-image">
+      {% endif %}
     {% elif data.widget.backgroundImageUrl %}
       <img src="{{ data.widget.backgroundImageUrl }}" 
            alt="新闻背景" 

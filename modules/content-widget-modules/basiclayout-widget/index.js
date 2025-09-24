@@ -2,7 +2,7 @@
  * @Author: xinyuHu hxyrkcy@outlook.com
  * @Date: 2025-09-21 13:26:22
  * @LastEditors: xinyuHu hxyrkcy@outlook.com
- * @LastEditTime: 2025-09-21 13:33:28
+ * @LastEditTime: 2025-09-23 15:49:55
  * @FilePath: \my-app\modules\content-widget-modules\basiclayout-widget\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,7 +13,7 @@ export default {
   options: {
     label: 'Basiclayout Widget',
     icon: 'layout-icon',
-    previewImage: 'preview.svg'
+    previewImage: 'jpg'
   },
   fields: {
     add: {

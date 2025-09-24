@@ -154,7 +154,7 @@ export default () => {
   });
 
   // 如果页面是动态加载的，重新初始化
-  if (window.apos) {
+  if (window.apos && window.apos.bus && window.apos.bus.$on) {
     window.apos.bus.$on('refreshed', () => {
       setTimeout(() => {
         new NewsHeroWidget();

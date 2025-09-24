@@ -1,0 +1,134 @@
+<!--
+ * @Author: xinyuHu hxyrkcy@outlook.com
+ * @Date: 2025-09-23 17:05:00
+ * @LastEditors: xinyuHu hxyrkcy@outlook.com
+ * @LastEditTime: 2025-09-23 17:05:00
+ * @FilePath: \my-app\modules\content-widget-modules\carousel-widget\views\widget.html
+ * @Description: 轮播图小部件模板
+-->
+
+<section 
+  data-aos="{{ data.widget.animationEffects }}" 
+  class="carousel-widget widget-my-spacing"
+  data-carousel-widget
+  data-autoplay="{{ data.widget.autoplay }}"
+  data-autoplay-speed="{{ data.widget.autoplaySpeed }}"
+  data-transition="{{ data.widget.transition }}"
+  data-pause-on-hover="{{ data.widget.pauseOnHover }}"
+  data-height="{{ data.widget.height }}"
+>
+  <div class="carousel-widget__container">
+    {% if data.widget.title or data.widget.description %}
+      <div class="carousel-widget__header">
+        {% if data.widget.title %}
+          <h2 class="carousel-widget__title">{{ data.widget.title }}</h2>
+        {% endif %}
+        {% if data.widget.description %}
+          <p class="carousel-widget__description">{{ data.widget.description }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="carousel-widget__carousel">
+      <div class="carousel-widget__track" data-carousel-track>
+        {% for slide in data.widget.slides %}
+          {% set image = apos.image.first(slide._image) %}
+          <div 
+            class="carousel-widget__slide carousel-widget__slide--{{ data.widget.transition }}"
+            data-slide-index="{{ loop.index0 }}"
+            style="background-image: url('{{ apos.attachment.url(image, {size: 'full' }) }}');"
+          >
+            <div 
+              class="carousel-widget__overlay"
+              style="background-color: rgba(0, 0, 0, {{ slide.overlayOpacity / 100 }});"
+            ></div>
+            
+            <div class="carousel-widget__content carousel-widget__content--{{ slide.textPosition }}">
+              <div class="carousel-widget__text-container">
+                {% if slide.title %}
+                  <h3 
+                    class="carousel-widget__slide-title"
+                    style="color: {{ slide.textColor }};"
+                  >
+                    {{ slide.title }}
+                  </h3>
+                {% endif %}
+                
+                {% if slide.description %}
+                  <p 
+                    class="carousel-widget__slide-description"
+                    style="color: {{ slide.textColor }};"
+                  >
+                    {{ slide.description }}
+                  </p>
+                {% endif %}
+                
+                {% if slide.buttonText and slide.buttonUrl %}
+                  <a 
+                    href="{{ slide.buttonUrl }}" 
+                    class="carousel-widget__button"
+                    style="color: {{ slide.textColor }}; border-color: {{ slide.textColor }};"
+                  >
+                    {{ slide.buttonText }}
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- 导航箭头 -->
+      {% if data.widget.showArrows and data.widget.slides.length > 1 %}
+        <button 
+          class="carousel-widget__arrow carousel-widget__arrow--prev" 
+          data-carousel-prev
+          aria-label="上一张"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"></polyline>
+          </svg>
+        </button>
+        <button 
+          class="carousel-widget__arrow carousel-widget__arrow--next" 
+          data-carousel-next
+          aria-label="下一张"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+        </button>
+      {% endif %}
+
+      <!-- 指示点 -->
+      {% if data.widget.showDots and data.widget.slides.length > 1 %}
+        <div class="carousel-widget__dots" data-carousel-dots>
+          {% for slide in data.widget.slides %}
+            <button 
+              class="carousel-widget__dot {% if loop.first %}carousel-widget__dot--active{% endif %}"
+              data-dot-index="{{ loop.index0 }}"
+              aria-label="跳转到第 {{ loop.index }} 张"
+            ></button>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- 播放/暂停按钮 -->
+      {% if data.widget.autoplay and data.widget.slides.length > 1 %}
+        <button 
+          class="carousel-widget__play-pause" 
+          data-carousel-play-pause
+          aria-label="暂停自动播放"
+        >
+          <svg class="carousel-widget__play-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5,3 19,12 5,21"></polygon>
+          </svg>
+          <svg class="carousel-widget__pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+            <rect x="6" y="4" width="4" height="16"></rect>
+            <rect x="14" y="4" width="4" height="16"></rect>
+          </svg>
+        </button>
+      {% endif %}
+    </div>
+  </div>
+</section>

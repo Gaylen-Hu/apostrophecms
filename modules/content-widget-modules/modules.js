@@ -39,5 +39,5 @@ export default {
   'advantage-card-widget': {},
   'news-hero-widget': {},
   'product-card-widget': {},
-  
+  'carousel-widget': {},
 };

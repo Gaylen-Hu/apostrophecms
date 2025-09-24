@@ -26,6 +26,50 @@
   {# Marketing fonts #}
   <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,700&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   
+  {# 统计代码 - 头部 #}
+  {% if data.global.analytics %}
+    {# Google Analytics #}
+    {% if data.global.analytics.googleAnalytics %}
+      <!-- Google Analytics -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id={{ data.global.analytics.googleAnalytics }}"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ data.global.analytics.googleAnalytics }}');
+      </script>
+    {% endif %}
+    
+    {% if data.global.analytics.googleAnalytics4 %}
+      <!-- Google Analytics 4 -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id={{ data.global.analytics.googleAnalytics4 }}"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ data.global.analytics.googleAnalytics4 }}');
+      </script>
+    {% endif %}
+    
+    {# 百度统计 #}
+    {% if data.global.analytics.baiduAnalytics %}
+      <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?{{ data.global.analytics.baiduAnalytics }}";
+          var s = document.getElementsByTagName("script")[0]; 
+          s.parentNode.insertBefore(hm, s);
+        })();
+      </script>
+    {% endif %}
+    
+    {# 自定义头部代码 #}
+    {% if data.global.analytics.customHeadCode %}
+      {{ data.global.analytics.customHeadCode | safe }}
+    {% endif %}
+  {% endif %}
+  
   {# 主要导航 #}
   {% render navigation.mainNavigation(data) %}
   
@@ -42,4 +86,17 @@
 
 {% block afterMain %}
     {% render footer.footer(data) %}
+    
+    {# 统计代码 - 底部 #}
+    {% if data.global.analytics %}
+      {# 百度统计代码（完整版本） #}
+      {% if data.global.analytics.baiduAnalyticsCode %}
+        {{ data.global.analytics.baiduAnalyticsCode | safe }}
+      {% endif %}
+      
+      {# 自定义底部代码 #}
+      {% if data.global.analytics.customBodyCode %}
+        {{ data.global.analytics.customBodyCode | safe }}
+      {% endif %}
+    {% endif %}
 {% endblock %}

@@ -166,6 +166,54 @@ export default {
             }
           }
         }
+      },
+      // 统计代码设置
+      analytics: {
+        label: '网站统计代码',
+        type: 'object',
+        fields: {
+          add: {
+            googleAnalytics: {
+              type: 'string',
+              label: 'Google Analytics 跟踪ID',
+              help: '例如: G-XXXXXXXXXX 或 UA-XXXXXXXXX-X',
+              placeholder: 'G-XXXXXXXXXX'
+            },
+            googleAnalytics4: {
+              type: 'string',
+              label: 'Google Analytics 4 测量ID',
+              help: '例如: G-XXXXXXXXXX',
+              placeholder: 'G-XXXXXXXXXX'
+            },
+            baiduAnalytics: {
+              type: 'string',
+              label: '百度统计 跟踪ID',
+              help: '例如: 12345678',
+              placeholder: '12345678'
+            },
+            baiduAnalyticsCode: {
+              type: 'string',
+              label: '百度统计代码',
+              textarea: true,
+              help: '完整的百度统计代码（包含script标签）',
+              placeholder: '<script>var _hmt = _hmt || [];(function() {var hm = document.createElement("script");hm.src = "https://hm.baidu.com/hm.js?您的统计代码";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm, s);})();</script>'
+            },
+            customHeadCode: {
+              type: 'string',
+              label: '自定义头部代码',
+              textarea: true,
+              help: '添加到页面<head>标签中的自定义代码（如其他统计代码、验证代码等）',
+              placeholder: '<!-- 自定义头部代码 -->'
+            },
+            customBodyCode: {
+              type: 'string',
+              label: '自定义底部代码',
+              textarea: true,
+              help: '添加到页面</body>标签前的自定义代码',
+              placeholder: '<!-- 自定义底部代码 -->'
+            }
+          }
+        }
       }
     },
     group: {
@@ -180,6 +228,10 @@ export default {
       basics: {
         label: '基础',
         fields: [ 'email', 'phone', 'address', 'copyright', 'filingNumber' ]
+      },
+      analytics: {
+        label: '统计代码',
+        fields: [ 'analytics' ]
       }
     }
   }

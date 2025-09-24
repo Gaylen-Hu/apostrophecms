@@ -9,16 +9,18 @@
       {# Logo 和网站标题 #}
       <a class="flex items-center space-x-3" href="/" data-discover="true">
         {% if data.global.logo and data.global.logo.items and data.global.logo.items[0] %}
-          <div class="w-10 h-10 flex-shrink-0">
-            {{ apos.image(data.global.logo.items[0]._image, { 
-              size: 'one-sixth',
-              alt: data.global.title or 'Logo'
-            }) }}
+          <div class="  flex-shrink-0" style="width: 100px; height: auto;">
+            {% set logoImage = apos.image.first(data.global.logo) %}
+          {% if logoImage %}
+            <img 
+              src="{{ apos.attachment.url(logoImage, { size: 'full' }) }}" 
+              alt="{{ logoImage.title or '公司logo' }}" 
+              class="w-full h-auto"
+            >
+          {% endif %}
           </div>
-        {% endif %}
-        <div class="text-blue-600 font-bold text-2xl">
-          {{ data.global.title or '网站标题' }}
-        </div>
+          {% endif %}
+     
       </a>
 
       {# 主导航菜单 #}

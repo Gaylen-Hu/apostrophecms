@@ -1,31 +1,212 @@
-{% import 'button-arrows.html' as buttonArrows %}
+<section 
+  data-aos="{{ data.widget.animationEffects }}" 
+  class="image-gallery-widget widget-my-spacing"
+  data-image-gallery
+  data-layout="{{ data.widget.layout }}"
+  data-grid-columns="{{ data.widget.gridColumns }}"
+  data-enable-lightbox="{{ data.widget.enableLightbox }}"
+  data-aspect-ratio="{{ data.widget.aspectRatio }}"
+>
+  <div class="image-gallery-widget__container">
+    {% if data.widget.title %}
+      <div class="image-gallery-widget__header">
+        <h2 class="image-gallery-widget__title">{{ data.widget.title }}</h2>
+        {% if data.widget.description %}
+          <p class="image-gallery-widget__description">{{ data.widget.description }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
 
-<section data-aos="{{ data.widget.animationEffects }}" class="image-gallery container widget-my-spacing">
-
-  <div class="swiper image-gallery__swiper" id="imageGallery" data-image-gallery data-slides="{{ data.widget.displayType}}">
-    <div class="swiper-wrapper" itemscope itemtype="http://schema.org/ImageGallery">
-      {% for image in data.widget._images %}
-        {% set background = apos.image.first(image) %}
-
-        <div id="{{ image._id }}" class="swiper-slide" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-          <a
-            itemprop="contentUrl"
-            href="{{ apos.attachment.url(background, {size: 'max' }) }}"
-            target="_blank"
-            class="image-gallery__{{ background.extension }}"
-          >
-            <img
-              src="{{ apos.attachment.url(background, {size: 'full' }) }}"
-              alt="{{ background.title }}"
-              itemprop="thumbnail"
-              class="img-fluid"
-            />
-          </a>
+    <div class="image-gallery-widget__content">
+      {% if data.widget.layout == 'grid' %}
+        <!-- 网格布局 -->
+        <div class="image-gallery-widget__grid image-gallery-widget__grid--{{ data.widget.gridColumns }}-cols">
+          {% for image in data.widget._images %}
+            {% set background = apos.image.first(image) %}
+            <div class="image-gallery-widget__item" data-image-item>
+              <div class="image-gallery-widget__image-container image-gallery-widget__image-container--{{ data.widget.aspectRatio }}">
+                {% if data.widget.enableLightbox %}
+                  <button 
+                    class="image-gallery-widget__image-button"
+                    data-lightbox-trigger
+                    data-image-index="{{ loop.index0 }}"
+                    aria-label="查看大图: {{ background.title }}"
+                  >
+                    <img
+                      src="{{ apos.attachment.url(background, {size: 'two-thirds' }) }}"
+                      alt="{{ background.title }}"
+                      class="image-gallery-widget__image"
+                      loading="lazy"
+                    />
+                    <div class="image-gallery-widget__overlay">
+                      <svg class="image-gallery-widget__zoom-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                        <line x1="11" y1="8" x2="11" y2="14"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                      </svg>
+                    </div>
+                  </button>
+                {% else %}
+                  <img
+                    src="{{ apos.attachment.url(background, {size: 'two-thirds' }) }}"
+                    alt="{{ background.title }}"
+                    class="image-gallery-widget__image"
+                    loading="lazy"
+                  />
+                {% endif %}
+              </div>
+              {% if data.widget.showCaptions and background.title %}
+                <div class="image-gallery-widget__caption">
+                  <p class="image-gallery-widget__caption-text">{{ background.title }}</p>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
         </div>
-      {% endfor %}
-    </div>
 
-    {% render buttonArrows.swiper() %}
+      {% elif data.widget.layout == 'carousel' %}
+        <!-- 轮播布局 -->
+        <div class="image-gallery-widget__carousel">
+          <div class="image-gallery-widget__carousel-container">
+            <div class="image-gallery-widget__carousel-track">
+              {% for image in data.widget._images %}
+                {% set background = apos.image.first(image) %}
+                <div class="image-gallery-widget__carousel-slide">
+                  <div class="image-gallery-widget__image-container image-gallery-widget__image-container--{{ data.widget.aspectRatio }}">
+                    {% if data.widget.enableLightbox %}
+                      <button 
+                        class="image-gallery-widget__image-button"
+                        data-lightbox-trigger
+                        data-image-index="{{ loop.index0 }}"
+                        aria-label="查看大图: {{ background.title }}"
+                      >
+                        <img
+                          src="{{ apos.attachment.url(background, {size: 'full' }) }}"
+                          alt="{{ background.title }}"
+                          class="image-gallery-widget__image"
+                          loading="lazy"
+                        />
+                        <div class="image-gallery-widget__overlay">
+                          <svg class="image-gallery-widget__zoom-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                            <line x1="11" y1="8" x2="11" y2="14"></line>
+                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                          </svg>
+                        </div>
+                      </button>
+                    {% else %}
+                      <img
+                        src="{{ apos.attachment.url(background, {size: 'full' }) }}"
+                        alt="{{ background.title }}"
+                        class="image-gallery-widget__image"
+                        loading="lazy"
+                      />
+                    {% endif %}
+                  </div>
+                  {% if data.widget.showCaptions and background.title %}
+                    <div class="image-gallery-widget__caption">
+                      <p class="image-gallery-widget__caption-text">{{ background.title }}</p>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          
+          <!-- 轮播控制按钮 -->
+          <button class="image-gallery-widget__carousel-btn image-gallery-widget__carousel-btn--prev" data-carousel-prev aria-label="上一张">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15,18 9,12 15,6"></polyline>
+            </svg>
+          </button>
+          <button class="image-gallery-widget__carousel-btn image-gallery-widget__carousel-btn--next" data-carousel-next aria-label="下一张">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9,18 15,12 9,6"></polyline>
+            </svg>
+          </button>
+        </div>
+
+      {% elif data.widget.layout == 'masonry' %}
+        <!-- 瀑布流布局 -->
+        <div class="image-gallery-widget__masonry">
+          {% for image in data.widget._images %}
+            {% set background = apos.image.first(image) %}
+            <div class="image-gallery-widget__masonry-item">
+              <div class="image-gallery-widget__image-container">
+                {% if data.widget.enableLightbox %}
+                  <button 
+                    class="image-gallery-widget__image-button"
+                    data-lightbox-trigger
+                    data-image-index="{{ loop.index0 }}"
+                    aria-label="查看大图: {{ background.title }}"
+                  >
+                    <img
+                      src="{{ apos.attachment.url(background, {size: 'two-thirds' }) }}"
+                      alt="{{ background.title }}"
+                      class="image-gallery-widget__image"
+                      loading="lazy"
+                    />
+                    <div class="image-gallery-widget__overlay">
+                      <svg class="image-gallery-widget__zoom-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                        <line x1="11" y1="8" x2="11" y2="14"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                      </svg>
+                    </div>
+                  </button>
+                {% else %}
+                  <img
+                    src="{{ apos.attachment.url(background, {size: 'two-thirds' }) }}"
+                    alt="{{ background.title }}"
+                    class="image-gallery-widget__image"
+                    loading="lazy"
+                  />
+                {% endif %}
+              </div>
+              {% if data.widget.showCaptions and background.title %}
+                <div class="image-gallery-widget__caption">
+                  <p class="image-gallery-widget__caption-text">{{ background.title }}</p>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
   </div>
 
+  <!-- 灯箱模态框 -->
+  {% if data.widget.enableLightbox %}
+    <div class="image-gallery-widget__lightbox" data-lightbox-modal>
+      <div class="image-gallery-widget__lightbox-backdrop" data-lightbox-close></div>
+      <div class="image-gallery-widget__lightbox-content">
+        <button class="image-gallery-widget__lightbox-close" data-lightbox-close aria-label="关闭">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div class="image-gallery-widget__lightbox-image-container">
+          <img class="image-gallery-widget__lightbox-image" data-lightbox-image alt="">
+        </div>
+        <div class="image-gallery-widget__lightbox-caption" data-lightbox-caption></div>
+        <div class="image-gallery-widget__lightbox-navigation">
+          <button class="image-gallery-widget__lightbox-nav image-gallery-widget__lightbox-nav--prev" data-lightbox-prev aria-label="上一张">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15,18 9,12 15,6"></polyline>
+            </svg>
+          </button>
+          <button class="image-gallery-widget__lightbox-nav image-gallery-widget__lightbox-nav--next" data-lightbox-next aria-label="下一张">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9,18 15,12 9,6"></polyline>
+            </svg>
+          </button>
+        </div>
+        <div class="image-gallery-widget__lightbox-counter" data-lightbox-counter></div>
+      </div>
+    </div>
+  {% endif %}
 </section>
