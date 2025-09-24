@@ -12,11 +12,11 @@
           <div class="  flex-shrink-0" style="width: 100px; height: auto;">
             {% set logoImage = apos.image.first(data.global.logo) %}
           {% if logoImage %}
-            <img 
+            <img  
               src="{{ apos.attachment.url(logoImage, { size: 'full' }) }}" 
               alt="{{ logoImage.title or '公司logo' }}" 
               class="w-full h-auto"
-            >
+            > 
           {% endif %}
           </div>
           {% endif %}
