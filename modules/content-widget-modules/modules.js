@@ -42,4 +42,5 @@ export default {
   'carousel-widget': {},
   'side-layout-widget': {},
   'side-content-widget': {},
+  'certification-card-widget': {},
 };

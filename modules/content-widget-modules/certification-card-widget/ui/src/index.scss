@@ -1,0 +1,18 @@
+// 资质认证卡片小部件样式
+.certification-card-widget {
+  &__title {
+    // 使用 !important 确保覆盖全局 h3 样式
+    font-size: 1.125rem !important; // text-lg 对应的大小
+    font-weight: 700 !important; // font-bold
+    color: #1f2937 !important; // text-gray-800
+    margin-bottom: 0.5rem;
+    line-height: 1.75rem;
+  }
+
+  // 响应式设计
+  @media (max-width: 768px) {
+    &__title {
+      font-size: 1rem !important; // text-base
+    }
+  }
+}
