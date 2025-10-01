@@ -174,13 +174,4 @@ coverage/
 *.key
 *.crt
 
-# Configuration files that might contain secrets
-config/local.js
-config/production.js
-config/staging.js
-
-# ApostropheCMS specific additional ignores
-/public/css/
-/public/js/
-/public/images/generated/
-/modules/*/ui/public/
+start.sh
