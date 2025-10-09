@@ -8,7 +8,7 @@ A starter kit for building marketing-themed websites. Add hero blocks, feature l
 npx @tailwindcss/cli -i modules/asset/ui/src/input.css -o modules/asset/ui/src/output.css --watch
 
 npx @tailwindcss/cli -i modules/asset/ui/src/input.css -o modules/asset/ui/src/output.css --watch
-
+  
 ## Get started
 ### Method 1
 1. Install the project using the [Apostrophe CLI tool]() using:

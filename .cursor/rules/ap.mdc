@@ -18,12 +18,32 @@ alwaysApply: true
 - **default-page/** - 默认页面类型
 - **asset/** - 静态资源模块
 
+### 核心概念
+
+#### 模块（Modules）
+- 所有功能都通过模块系统构建
+- 每个模块负责提供特定的功能集
+- 模块通过`extend`继承其他模块的功能
+- 项目级模块可以配置和扩展核心模块
+- 支持ESM (推荐) 和CommonJS格式，但项目内必须统一使用一种格式
+
+#### 文档类型（Doc Types）
+- **Pages (页面)**: 层级化组织的内容，通常不常更新
+- **Pieces (片段)**: 结构化的独立内容，按日期或分类组织
+- **Widgets (小部件)**: 可添加到area字段的内容块
+
+#### Schema (模式)
+- 定义编辑界面的字段集合
+- 字段提供服务端数据验证和清理
+- 通过`add`、`remove`、`group`属性配置
+- 自动继承父模块的字段配置
+
 ### 技术栈
 - **后端**: Node.js + ApostropheCMS 4.x
 - **前端**: Vite + SCSS + JavaScript
 - **模板**: Nunjucks
 - **数据库**: MongoDB
-- **国际化**: i18n-static模块
+- **国际化**: @apostrophecms/i18n 模块
 
 ## 开发规范
 
@@ -93,61 +113,284 @@ export default {
 - 使用CSS变量和mixins
 - 支持响应式断点
 
-### 4. 国际化规范
+### 4. 国际化 (i18n) 规范
 
-#### 本地化文件结构
+#### Locale配置
+```javascript
+// modules/@apostrophecms/i18n/index.js
+export default {
+  options: {
+    // 配置语言环境
+    locales: {
+      en: {
+        label: 'English'
+        // 默认locale，无需prefix或hostname
+      },
+      'zh': {
+        label: '中文 (简体)',
+        prefix: '/zh'  // URL前缀
+      },
+      'zh-TW': {
+        label: '中文 (繁體)',
+        hostname: 'tw.example.com' // 域名
+      },
+      'zh-HK': {
+        label: '中文 (香港)',
+        hostname: 'hk.example.com',
+        prefix: '/zh' // 同时使用域名和前缀
+      }
+    },
+    // 默认语言环境（可选，默认为第一个配置的locale）
+    defaultLocale: 'en'
+  }
+};
 ```
-modules/@apostrophecms/i18n/i18n/
-├── myApp/           # 项目级别命名空间
-│   ├── zh.json     # 中文翻译
-│   └── en.json     # 英文翻译
-├── zh.json         # 核心UI中文翻译
-└── en.json         # 核心UI英文翻译
+
+#### Locale优先级
+1. 同时匹配hostname和prefix
+2. 只匹配hostname（无prefix配置）
+3. 只匹配prefix（无hostname配置）
+4. 默认locale
+
+#### 静态内容本地化
+
+##### 文件结构
+```
+modules/my-module/i18n/
+├── en.json              # 英文翻译（服务端）
+├── zh.json              # 中文翻译（服务端）
+└── adminStrings/        # 管理界面翻译（需配置）
+    ├── en.json
+    └── zh.json
+```
+
+##### 管理界面翻译配置
+```javascript
+// modules/my-module/index.js
+export default {
+  i18n: {
+    adminStrings: {
+      browser: true  // 将此命名空间包含在管理UI中
+    }
+  }
+};
+```
+
+##### 翻译文件示例
+```json
+// modules/my-module/i18n/zh.json
+{
+  "welcome": "欢迎",
+  "contact_office": "联系我们 {{ city }} 办公室",
+  "item_count": "共 {{ count }} 项"
+}
 ```
 
 #### 模板中的本地化
-```html
-<!-- 基本用法 -->
+
+##### 基本用法
+```nunjucks
+{# 使用默认命名空间 #}
+<h1>{{ __t('welcome') }}</h1>
+
+{# 使用自定义命名空间 #}
 <h1>{{ __t('myApp:welcome') }}</h1>
 
-<!-- 带插值的用法 -->
+{# 带插值 #}
 <p>{{ __t('myApp:contact_office', { city: data.piece.city }) }}</p>
+
+{# 复数形式 #}
+<p>{{ __t('myApp:item_count', { count: items.length }) }}</p>
 ```
 
-### 5. 字段类型使用
+#### JavaScript中的本地化
+```javascript
+// 服务端
+methods(self) {
+  return {
+    async myMethod(req) {
+      const message = req.t('myApp:welcome');
+      return message;
+    }
+  };
+}
 
-#### 常用字段类型
-- `string` - 文本字段
-- `text` - 多行文本
-- `area` - 富文本区域
-- `attachment` - 文件附件
-- `relationship` - 关系字段
-- `select` - 下拉选择
-- `boolean` - 布尔值
-- `integer` - 整数
-- `float` - 浮点数
-- `date` - 日期
-- `time` - 时间
-- `color` - 颜色选择器
+// 浏览器端（管理UI）
+// 需要在i18n配置中设置browser: true
+const message = apos.i18n.t('myApp:adminStrings:welcome');
+```
+
+#### 动态内容本地化
+- 通过Apostrophe的locale系统自动处理
+- 每个locale都有独立的内容副本
+- 编辑器可以为每个locale创建和修改内容
+- 使用locale switcher切换编辑不同语言的内容
+
+### 5. 字段类型参考
+
+#### 核心字段类型
+| 字段类型 | 说明 | 常用属性 |
+|---------|------|---------|
+| `string` | 简单文本 | `required`, `max`, `min`, `placeholder` |
+| `email` | 电子邮件地址 | `required` |
+| `url` | URL地址 | `required` |
+| `slug` | URL友好的字符串 | 自动小写和连字符化 |
+| `password` | 密码字段 | 输入时隐藏 |
+| `boolean` | 布尔值 | `def`, `required` |
+| `integer` | 整数 | `min`, `max`, `def` |
+| `float` | 浮点数 | `min`, `max`, `def` |
+| `date` | 日期 (YYYY-MM-DD) | `min`, `max`, `def` |
+| `time` | 时间 (HH:MM:SS) | `def` |
+| `dateAndTime` | 日期和时间 | ISO 8601格式 |
+| `select` | 下拉选择 | `choices`, `def` |
+| `radio` | 单选按钮 | `choices`, `def` |
+| `checkboxes` | 多选框 | `choices`, `def` |
+| `range` | 滑动条 | `min`, `max`, `step`, `unit` |
+| `color` | 颜色选择器 | `def` |
+| `array` | 结构化数组 | `fields`, `titleField` |
+| `object` | 结构化对象 | `fields` |
+| `area` | 内容区域 | `widgets`, `max` |
+| `attachment` | 文件上传 | `fileGroup`, `accept` |
+| `relationship` | 关系字段 | `withType`, `max`, `builders` |
+| `relationshipReverse` | 反向关系 | `reverseOf` |
+| `oembed` | oEmbed媒体 | `oembedType` |
 
 #### 字段配置示例
 ```javascript
 fields: {
   add: {
+    // 基本字段
     title: {
       type: 'string',
-      label: 'Title',
-      required: true
+      label: '标题',
+      required: true,
+      max: 100
     },
+    
+    // 文本区域
     description: {
-      type: 'text',
-      label: 'Description',
-      textarea: true
+      type: 'string',
+      label: '描述',
+      textarea: true,
+      max: 500
     },
+    
+    // 日期和时间
+    publishedAt: {
+      type: 'dateAndTime',
+      label: '发布时间'
+    },
+    
+    // 选择字段
+    category: {
+      type: 'select',
+      label: '分类',
+      choices: [
+        { label: '新闻', value: 'news' },
+        { label: '博客', value: 'blog' },
+        { label: '教程', value: 'tutorial' }
+      ],
+      def: 'news'
+    },
+    
+    // 布尔字段
+    featured: {
+      type: 'boolean',
+      label: '是否推荐',
+      def: false
+    },
+    
+    // 关系字段
+    _author: {
+      type: 'relationship',
+      label: '作者',
+      withType: 'author',
+      max: 1,
+      required: true,
+      builders: {
+        project: {
+          title: 1,
+          _url: 1
+        }
+      }
+    },
+    
+    // Array字段
+    items: {
+      type: 'array',
+      label: '项目列表',
+      titleField: 'name',
+      fields: {
+        add: {
+          name: {
+            type: 'string',
+            label: '名称',
+            required: true
+          },
+          description: {
+            type: 'string',
+            label: '描述',
+            textarea: true
+          }
+        }
+      }
+    },
+    
+    // 附件字段
     image: {
       type: 'attachment',
-      label: 'Image',
-      fileGroup: 'images'
+      label: '图片',
+      fileGroup: 'images',
+      required: true
+    },
+    
+    // Area字段
+    content: {
+      type: 'area',
+      label: '内容',
+      options: {
+        widgets: {
+          '@apostrophecms/rich-text': {},
+          '@apostrophecms/image': {}
+        },
+        max: 10
+      }
+    }
+  },
+  
+  // 字段分组
+  group: {
+    basics: {
+      label: '基本信息',
+      fields: ['title', 'description', 'category']
+    },
+    metadata: {
+      label: '元数据',
+      fields: ['_author', 'publishedAt', 'featured']
+    },
+    content: {
+      label: '内容',
+      fields: ['content', 'items']
+    }
+  }
+}
+```
+
+#### 条件字段
+```javascript
+fields: {
+  add: {
+    showDetails: {
+      type: 'boolean',
+      label: '显示详情'
+    },
+    details: {
+      type: 'string',
+      label: '详情',
+      textarea: true,
+      if: {
+        showDetails: true
+      }
     }
   }
 }
@@ -162,18 +405,73 @@ export default {
   options: {
     label: 'Custom Widget',
     icon: 'widget-icon',
-    previewImage: 'preview.jpg'
+    // 预览图片配置
+    previewImage: 'jpg', // 只需扩展名，文件应为 public/preview.jpg
+    // 或使用完整URL
+    // previewUrl: '/modules/@apostrophecms/my-widget/special-preview.jpg'
+    // 或使用图标
+    // previewIcon: 'icon-name'
+    
+    // 占位符内容配置
+    placeholder: true, // 启用占位符内容
+    placeholderClass: 'custom-widget-placeholder',
+    
+    // 禁用初始编辑器弹窗
+    initialModal: false,
+    
+    // 启用实时预览
+    preview: true
   },
   fields: {
     add: {
-      // 字段定义
-    }
+      title: {
+        type: 'string',
+        label: 'Title',
+        placeholder: 'Enter title here'
+      }
+      // 更多字段...
+    },
+    // 小部件不使用group属性
+    // 如果字段较多，可以使用group但不会生成tab
   }
 };
 ```
 
+#### 小部件字段分组
+```javascript
+fields: {
+  add: {
+    subtitle: {
+      label: 'Subtitle',
+      type: 'string'
+    },
+    author: {
+      label: 'Author',
+      type: 'string'
+    },
+    _article: {
+      label: 'Article',
+      type: 'relationship',
+      withType: 'article'
+    }
+  },
+  group: {
+    content: {
+      label: 'Content',
+      fields: ['_article']
+    },
+    metadata: {
+      label: 'Metadata',
+      fields: ['subtitle', 'author']
+    }
+  }
+}
+```
+
 #### 小部件模板
 ```html
+{# 小部件字段值在 data.widget 上可用 #}
+{# 上下文选项在 data.contextOptions 上可用 #}
 <section class="custom-widget custom-widget--{{ data.widget.style }}">
   {% if data.widget.title %}
     <h2>{{ data.widget.title }}</h2>
@@ -187,7 +485,201 @@ export default {
 </section>
 ```
 
-### 7. API路由开发
+#### 小部件客户端JavaScript (Widget Players)
+```javascript
+// modules/collapse-widget/ui/src/index.js
+export default () => {
+  apos.util.widgetPlayers.collapse = {
+    // 使用data属性选择器
+    selector: '[data-collapse-widget]',
+    player: function(el) {
+      // el 是小部件的包裹元素
+      const button = el.querySelector('[data-collapse-button]');
+      const content = el.querySelector('[data-collapse-content]');
+      
+      // 从data属性获取配置
+      const color = el.dataset.color || 'blue';
+      
+      button.onclick = () => {
+        content.hidden = !content.hidden;
+      };
+    }
+  };
+};
+```
+
+#### 小部件服务端验证
+```javascript
+export default {
+  extend: '@apostrophecms/widget-type',
+  extendMethods(self) {
+    return {
+      async sanitize(_super, req, input, ...rest) {
+        // 首先调用原始sanitize方法
+        const sanitized = await _super(req, input, ...rest);
+        
+        // 添加自定义验证逻辑
+        if (sanitized.title?.toLowerCase().includes('invalid')) {
+          throw self.apos.error('invalid', 'Validation failed', {
+            detail: '标题包含不允许的内容，请修改。'
+          });
+        }
+        
+        return sanitized;
+      }
+    };
+  }
+};
+```
+
+### 7. Area配置最佳实践
+
+#### 基本Area配置
+```javascript
+fields: {
+  add: {
+    main: {
+      type: 'area',
+      options: {
+        // 配置允许的小部件（不包含-widget后缀）
+        widgets: {
+          '@apostrophecms/rich-text': {},
+          '@apostrophecms/image': {},
+          '@apostrophecms/video': {}
+        },
+        // 限制小部件数量
+        max: 5
+      }
+    }
+  }
+}
+```
+
+#### 扩展的小部件预览菜单
+```javascript
+fields: {
+  add: {
+    main: {
+      type: 'area',
+      options: {
+        // 启用扩展预览菜单
+        expanded: true,
+        // 将小部件分组
+        groups: {
+          basic: {
+            label: '基础组件',
+            widgets: {
+              '@apostrophecms/rich-text': {},
+              '@apostrophecms/image': {},
+              'topic': {}
+            },
+            columns: 2 // 每行显示2个小部件
+          },
+          layout: {
+            label: '布局组件',
+            widgets: {
+              'two-column': {},
+              'hero': {}
+            },
+            columns: 3 // 每行显示3个小部件
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+#### 在模板中使用Area
+```nunjucks
+{# 基本用法 #}
+{% area data.page, 'main' %}
+
+{# 传递上下文选项给小部件模板 #}
+{% area data.page, 'main' with {
+  '@apostrophecms/image': {
+    sizes: '(min-width: 600px) 45vw, (min-width: 1140px) 530px'
+  }
+} %}
+```
+
+### 8. 模板开发规范
+
+#### 模板继承
+```nunjucks
+{# 继承全局布局模板 #}
+{% extends "layout.html" %}
+
+{% block main %}
+  <h1>{{ data.page.title }}</h1>
+  {% area data.page, 'main' %}
+{% endblock %}
+```
+
+#### 使用super()添加内容
+```nunjucks
+{% block main %}
+  {# 保留父模板的内容并添加新内容 #}
+  {{ super() }}
+  <div class="additional-content">
+    {# 新增内容 #}
+  </div>
+{% endblock %}
+```
+
+#### 包含其他模板
+```nunjucks
+{# 包含同目录模板 #}
+{% include "footer.html" %}
+
+{# 包含其他模块的模板 #}
+{% include "default-page:sidebar.html" %}
+
+{# 继承其他模块的模板 #}
+{% extends "default-page:page.html" %}
+```
+
+#### 模板数据访问
+```nunjucks
+{# 页面数据 #}
+{{ data.page.title }}
+{{ data.page.subtitle }}
+
+{# 片段数据 #}
+{{ data.piece.title }}
+
+{# 小部件数据 #}
+{{ data.widget.headline }}
+
+{# 全局数据 #}
+{{ data.global.companyName }}
+
+{# 调试数据 #}
+{{ apos.log(data.page) }}
+```
+
+#### 页面树导航数据
+```nunjucks
+{# 主页数据 #}
+{{ data.home.title }}
+
+{# 主页的子页面 #}
+{% for page in data.home._children %}
+  <a href="{{ page._url }}">{{ page.title }}</a>
+{% endfor %}
+
+{# 当前页面的祖先 #}
+{% for page in data.page._ancestors %}
+  <a href="{{ page._url }}">{{ page.title }}</a>
+{% endfor %}
+
+{# 当前页面的子页面 #}
+{% for page in data.page._children %}
+  <a href="{{ page._url }}">{{ page.title }}</a>
+{% endfor %}
+```
+
+### 9. API路由开发
 
 #### 自定义API路由
 ```javascript
@@ -195,9 +687,31 @@ export default {
   apiRoutes(self) {
     return {
       get: {
-        async customEndpoint(req) {
-          const data = await self.find(req).toArray();
-          return { data };
+        // GET /api/v1/product/newest
+        async newest(req) {
+          const product = await self.find(req)
+            .sort({ createdAt: -1 })
+            .toObject();
+          
+          if (!product) {
+            // 返回404错误
+            throw self.apos.error('notfound', 'No products found.');
+          }
+          
+          return { product };
+        },
+        
+        // 使用完全自定义的URL: GET /my-api/newest
+        '/my-api/newest': async function(req) {
+          // ...
+        }
+      },
+      post: {
+        // POST /api/v1/product/bulk-create
+        async bulkCreate(req) {
+          const { items } = req.body;
+          // 处理批量创建...
+          return { success: true, count: items.length };
         }
       }
     };
@@ -205,37 +719,433 @@ export default {
 };
 ```
 
-### 8. 数据库查询
-
-#### 查询构建器使用
+#### REST API路由
 ```javascript
-// 查找所有已发布的页面
-const pages = await self.apos.doc.find(req, {
-  type: 'default-page',
+export default {
+  restApiRoutes(self) {
+    return {
+      // GET /api/v1/product
+      async getAll(req) {
+        const products = await self.find(req).toArray();
+        return { results: products };
+      },
+      
+      // GET /api/v1/product/:_id
+      async getOne(req, _id) {
+        const product = await self.findOneForEditing(req, { _id });
+        if (!product) {
+          throw self.apos.error('notfound');
+        }
+        return product;
+      }
+    };
+  }
+};
+```
+
+#### 错误处理
+```javascript
+// 可用的错误类型和对应的HTTP状态码
+throw self.apos.error('invalid');      // 400
+throw self.apos.error('forbidden');    // 403
+throw self.apos.error('notfound');     // 404
+throw self.apos.error('required');     // 422
+throw self.apos.error('conflict');     // 409
+throw self.apos.error('unimplemented'); // 501
+```
+
+### 10. 数据库查询
+
+#### 基本查询方法
+```javascript
+// 查找多个文档
+const products = await self.find(req, {
+  type: 'product',
   published: true
 }).toArray();
 
-// 查找特定片段
-const products = await self.apos.doc.find(req, {
-  type: 'product',
-  published: true
-}).sort({ createdAt: -1 }).limit(10).toArray();
+// 查找单个文档
+const product = await self.findOne(req, {
+  _id: 'xyz123'
+});
+
+// 转换为对象（如果不存在返回null）
+const product = await self.find(req).toObject();
+
+// 统计数量
+const count = await self.find(req).toCount();
 ```
 
-### 9. 前端资源管理
+#### 查询构建器（Builders）
+```javascript
+// 排序
+await self.find(req)
+  .sort({ createdAt: -1 })  // 倒序
+  .toArray();
+
+// 限制数量
+await self.find(req)
+  .limit(10)
+  .toArray();
+
+// 跳过
+await self.find(req)
+  .skip(20)
+  .toArray();
+
+// 分页
+await self.find(req)
+  .page(2)        // 第二页
+  .perPage(10)    // 每页10条
+  .toArray();
+
+// 搜索
+await self.find(req)
+  .search('关键词')
+  .toArray();
+
+// 投影（选择字段）
+await self.find(req)
+  .project({
+    title: 1,
+    price: 1,
+    _url: 1
+  })
+  .toArray();
+
+// 关系查询
+await self.find(req)
+  .relationships({
+    _author: {
+      title: 1,
+      email: 1
+    }
+  })
+  .toArray();
+
+// 多个构建器链式调用
+await self.find(req)
+  .search('keyword')
+  .sort({ createdAt: -1 })
+  .limit(10)
+  .project({ title: 1, _url: 1 })
+  .toArray();
+```
+
+#### 自定义查询构建器
+```javascript
+export default {
+  queries(self, query) {
+    return {
+      builders: {
+        // 自定义构建器
+        belowAverage: {
+          def: false,
+          async finalize() {
+            if (query.get('belowAverage')) {
+              const average = await self.averagePrice(query.req);
+              query.and({
+                price: { $lt: average }
+              });
+            }
+          },
+          // 支持REST API查询参数
+          launder(value) {
+            return self.apos.launder.boolean(value);
+          },
+          // 提供选项
+          choices() {
+            return [
+              { value: '0', label: 'No' },
+              { value: '1', label: 'Yes' }
+            ];
+          }
+        }
+      },
+      methods: {
+        // 自定义查询方法
+        async toRandomObject() {
+          await query.finalize();
+          const pipeline = [
+            { $match: query.get('criteria') },
+            { $sample: { size: 1 } }
+          ];
+          const result = await self.apos.doc.db
+            .aggregate(pipeline)
+            .toArray();
+          return result[0];
+        }
+      }
+    };
+  }
+};
+```
+
+#### MongoDB原生查询
+```javascript
+// 直接访问MongoDB集合
+const result = await self.apos.doc.db.findOne({
+  type: 'product',
+  slug: 'my-product'
+});
+
+// 聚合查询
+const results = await self.apos.doc.db.aggregate([
+  { $match: { type: 'product' } },
+  { $group: {
+    _id: '$category',
+    count: { $sum: 1 }
+  }}
+]).toArray();
+
+// 更新文档
+await self.apos.doc.db.updateOne(
+  { _id: doc._id },
+  { $set: { price: 99.99 } }
+);
+```
+
+### 11. 模块配置模式
+
+#### 模块扩展（extend）
+```javascript
+// 创建新的piece类型
+export default {
+  extend: '@apostrophecms/piece-type',
+  options: {
+    label: 'Product',
+    pluralLabel: 'Products'
+  }
+};
+
+// 创建新的页面类型
+export default {
+  extend: '@apostrophecms/page-type',
+  options: {
+    label: 'Landing Page'
+  }
+};
+
+// 创建新的小部件
+export default {
+  extend: '@apostrophecms/widget-type',
+  options: {
+    label: 'Hero Widget'
+  }
+};
+
+// 扩展其他模块
+export default {
+  extend: 'default-page',
+  // 继承default-page的所有功能
+};
+```
+
+#### 模块改进（improve）
+```javascript
+// 在npm模块中改进核心模块
+export default {
+  improve: '@apostrophecms/image',
+  // 增强现有的image模块
+  handlers(self) {
+    return {
+      'afterInsert': {
+        async processImage(req, doc) {
+          // 自定义图片处理逻辑
+        }
+      }
+    };
+  }
+};
+```
+
+#### 扩展方法模式
+```javascript
+export default {
+  methods(self) {
+    return {
+      // 完全覆盖方法
+      myMethod() {
+        return 'new implementation';
+      }
+    };
+  },
+  
+  extendMethods(self) {
+    return {
+      // 扩展现有方法
+      myMethod(_super, ...args) {
+        const result = _super(...args);
+        // 添加额外功能
+        return result + ' enhanced';
+      }
+    };
+  }
+};
+```
+
+#### 事件处理器
+```javascript
+export default {
+  handlers(self) {
+    return {
+      // 监听自己模块的事件
+      'beforeInsert': {
+        async validate(req, piece) {
+          // 插入前验证
+        }
+      },
+      
+      // 监听其他模块的事件
+      '@apostrophecms/page:beforeSend': {
+        async addData(req) {
+          // 在页面发送前添加数据
+          req.data.customData = await self.getData(req);
+        }
+      }
+    };
+  }
+};
+```
+
+### 12. CLI工具使用
+
+#### 快速创建模块
+```bash
+# 创建piece类型
+apos add piece product
+
+# 创建页面类型
+apos add page landing-page
+
+# 创建小部件（带player）
+apos add widget hero --player
+
+# 创建piece页面
+apos add piece-page-type product
+```
+
+#### 其他常用命令
+```bash
+# 启动开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+
+# 运行数据迁移
+node app @apostrophecms/migration:migrate
+
+# 清除缓存
+node app @apostrophecms/cache:clear
+
+# 创建管理员用户
+node app @apostrophecms/user:add admin admin
+```
+
+### 13. 前端资源管理
 
 #### Vite配置
 - 使用`@apostrophecms/vite`模块
 - 支持SCSS编译
 - 自动处理资源优化
-- 支持热重载
+- 支持热重载（HMR）
 
-#### 静态资源
-- 图片放在`public/images/`目录
-- 字体放在`public/fonts/`目录
-- 第三方库通过npm安装
+#### 模块UI资源结构
+```
+my-module/
+├── ui/
+│   └── src/
+│       ├── index.js      # JavaScript入口
+│       └── index.scss    # 样式入口
+└── public/
+    └── images/           # 静态图片
+```
 
-### 10. 部署和构建
+#### 浏览器端JavaScript
+```javascript
+// modules/my-module/ui/src/index.js
+export default () => {
+  // 页面加载时执行
+  console.log('Module loaded');
+  
+  // 使用apos对象
+  apos.util.onReady(() => {
+    // DOM准备好后执行
+  });
+  
+  // 使用apos.http进行API调用
+  async function fetchData() {
+    const result = await apos.http.get('/api/v1/product/newest');
+    return result;
+  }
+};
+```
+
+#### SCSS样式组织
+```scss
+// modules/asset/ui/src/index.scss
+@import 'variables';
+@import 'mixins';
+@import 'base';
+@import 'components/buttons';
+@import 'components/forms';
+@import 'layout/header';
+@import 'layout/footer';
+@import 'utilities';
+```
+
+#### 静态资源引用
+```nunjucks
+{# 在模板中引用模块的public资源 #}
+<img src="/modules/my-module/images/logo.png" alt="Logo">
+
+{# 引用项目级资源 #}
+<img src="/images/banner.jpg" alt="Banner">
+```
+
+### 14. 部署和构建
+
+#### 环境配置
+```javascript
+// app.js
+export default {
+  shortName: 'my-app',
+  baseUrl: process.env.APOS_BASE_URL || 'http://localhost:3000',
+  
+  // 生产环境配置
+  ...(process.env.NODE_ENV === 'production' && {
+    minify: true,
+    production: true
+  }),
+  
+  // 会话密钥
+  modules: {
+    '@apostrophecms/express': {
+      options: {
+        session: {
+          secret: process.env.APOS_SESSION_SECRET
+        }
+      }
+    }
+  }
+};
+```
+
+#### 环境变量
+```bash
+# .env 文件
+APOS_BASE_URL=https://example.com
+APOS_MONGODB_URI=mongodb://localhost:27017/my-app
+APOS_SESSION_SECRET=your-secret-key-here
+
+# 生产环境
+NODE_ENV=production
+
+# i18n调试
+APOS_DEBUG_I18N=1
+APOS_SHOW_I18N=1
+```
 
 #### 构建命令
 ```bash
@@ -248,490 +1158,295 @@ npm run build
 # 生产运行
 npm run serve
 
-# 完整发布
+# 完整发布流程
 npm run release
+# 等同于: npm install && npm run build && node app @apostrophecms/migration:migrate
 ```
 
-#### 环境变量
-- `APOS_BASE_URL` - 基础URL
-- `APOS_MONGODB_URI` - MongoDB连接字符串
-- `APOS_SECRET` - 应用密钥
+### 15. 安全最佳实践
 
-### 11. 调试和开发工具
-
-#### 本地化调试
-```bash
-# 启用i18n调试
-APOS_DEBUG_I18N=1 npm run dev
-
-# 显示本地化指示器
-APOS_SHOW_I18N=1 npm run dev
-```
-
-#### 日志和错误处理
-- 使用`apos.log()`记录日志
-- 使用`apos.error()`抛出错误
-- 配置适当的错误页面
-
-### 12. 安全最佳实践
-
-#### 权限控制
-- 使用ApostropheCMS的权限系统
-- 配置适当的用户角色
-- 保护敏感API端点
-
-#### 数据验证
-- 使用字段验证规则
-- 清理用户输入
-- 防止XSS攻击
-
-### 13. 性能优化
-
-#### 数据库优化
-- 使用适当的索引
-- 限制查询结果数量
-- 使用投影减少数据传输
-
-#### 前端优化
-- 压缩CSS和JavaScript
-- 优化图片资源
-- 使用CDN加速
-
-### 14. 测试策略
-
-#### 功能测试
-- 测试小部件渲染
-- 测试API端点
-- 测试用户权限
-
-#### 国际化测试
-- 测试多语言切换
-- 验证翻译完整性
-- 测试RTL语言支持
-
-## 常用命令
-
-```bash
-# 启动开发服务器
-npm run dev
-
-# 构建生产版本
-npm run build
-
-# 运行数据库迁移
-node app @apostrophecms/migration:migrate
-
-# 清除缓存
-node app @apostrophecms/cache:clear
-```
-
-## 教程实践指南
-
-### 1. 页面创建教程实践
-
-#### 创建自定义页面类型
+#### 权限和角色
 ```javascript
-// modules/custom-page/index.js
-export default {
-  extend: '@apostrophecms/page-type',
-  options: {
-    label: 'Custom Page',
-    pluralLabel: 'Custom Pages'
-  },
-  fields: {
-    add: {
-      subtitle: {
-        type: 'string',
-        label: 'Subtitle'
-      },
-      heroImage: {
-        type: 'attachment',
-        label: 'Hero Image',
-        fileGroup: 'images'
-      }
-    },
-    group: {
-      basics: {
-        label: 'Basics',
-        fields: ['title', 'subtitle', 'heroImage']
-      }
-    }
-  }
-};
-```
-
-#### 页面模板继承
-```html
-<!-- modules/custom-page/views/page.html -->
-{% extends "layout.html" %}
-
-{% block main %}
-<section class="custom-page">
-  <div class="hero">
-    {% if data.page.heroImage %}
-      {{ apos.image(data.page.heroImage, { size: 'full' }) }}
-    {% endif %}
-    <h1>{{ data.page.title }}</h1>
-    {% if data.page.subtitle %}
-      <p class="subtitle">{{ data.page.subtitle }}</p>
-    {% endif %}
-  </div>
-  
-  <div class="content">
-    {% area data.page, 'main' %}
-  </div>
-</section>
-{% endblock %}
-```
-
-### 2. 小部件开发教程实践
-
-#### 创建自定义小部件
-```javascript
-// modules/content-widget-modules/hero-widget/index.js
-export default {
-  extend: '@apostrophecms/widget-type',
-  options: {
-    label: 'Hero Widget',
-    icon: 'hero-icon',
-    previewImage: 'preview.jpg'
-  },
-  fields: {
-    add: {
-      headline: {
-        type: 'string',
-        label: 'Headline',
-        required: true
-      },
-      subheadline: {
-        type: 'text',
-        label: 'Subheadline',
-        textarea: true
-      },
-      backgroundImage: {
-        type: 'attachment',
-        label: 'Background Image',
-        fileGroup: 'images'
-      },
-      ctaText: {
-        type: 'string',
-        label: 'Call to Action Text'
-      },
-      ctaUrl: {
-        type: 'url',
-        label: 'Call to Action URL'
-      }
-    },
-    group: {
-      content: {
-        label: 'Content',
-        fields: ['headline', 'subheadline']
-      },
-      design: {
-        label: 'Design',
-        fields: ['backgroundImage', 'ctaText', 'ctaUrl']
-      }
-    }
-  }
-};
-```
-
-#### 小部件模板
-```html
-<!-- modules/content-widget-modules/hero-widget/views/widget.html -->
-<section class="hero-widget" 
-         {% if data.widget.backgroundImage %}
-           style="background-image: url({{ apos.attachment.url(data.widget.backgroundImage, { size: 'full' }) }})"
-         {% endif %}>
-  <div class="hero-widget__content">
-    <h1 class="hero-widget__headline">{{ data.widget.headline }}</h1>
-    {% if data.widget.subheadline %}
-      <p class="hero-widget__subheadline">{{ data.widget.subheadline }}</p>
-    {% endif %}
-    {% if data.widget.ctaText and data.widget.ctaUrl %}
-      <a href="{{ data.widget.ctaUrl }}" class="hero-widget__cta">
-        {{ data.widget.ctaText }}
-      </a>
-    {% endif %}
-  </div>
-</section>
-```
-
-### 3. 内容片段教程实践
-
-#### 创建产品片段
-```javascript
-// modules/pieces-modules/product/index.js
+// 配置自定义权限
 export default {
   extend: '@apostrophecms/piece-type',
   options: {
-    label: 'Product',
-    pluralLabel: 'Products',
-    icon: 'product-icon'
-  },
-  fields: {
-    add: {
-      price: {
-        type: 'float',
-        label: 'Price',
-        required: true
-      },
-      description: {
-        type: 'text',
-        label: 'Description',
-        textarea: true
-      },
-      images: {
-        type: 'array',
-        label: 'Product Images',
-        fields: {
-          add: {
-            image: {
-              type: 'attachment',
-              label: 'Image',
-              fileGroup: 'images'
-            },
-            caption: {
-              type: 'string',
-              label: 'Caption'
-            }
-          }
-        }
-      },
-      category: {
-        type: 'select',
-        label: 'Category',
-        choices: [
-          { label: 'Electronics', value: 'electronics' },
-          { label: 'Clothing', value: 'clothing' },
-          { label: 'Books', value: 'books' }
-        ]
-      },
-      inStock: {
-        type: 'boolean',
-        label: 'In Stock',
-        def: true
-      }
-    },
-    group: {
-      basics: {
-        label: 'Basic Information',
-        fields: ['title', 'price', 'description']
-      },
-      media: {
-        label: 'Media',
-        fields: ['images']
-      },
-      details: {
-        label: 'Product Details',
-        fields: ['category', 'inStock']
-      }
+    // 定义权限
+    permissions: {
+      edit: 'editor',
+      publish: 'editor',
+      delete: 'admin'
     }
   }
 };
 ```
 
-#### 产品列表页面
+#### API路由安全
 ```javascript
-// modules/pieces-modules/product-page/index.js
 export default {
-  extend: '@apostrophecms/piece-page-type',
-  options: {
-    label: 'Product Page',
-    pluralLabel: 'Product Pages'
-  }
-};
-```
-
-### 4. 导航构建教程实践
-
-#### 全局导航配置
-```javascript
-// modules/@apostrophecms/global/index.js
-export default {
-  fields: {
-    add: {
-      headerNav: {
-        type: 'array',
-        label: 'Header Navigation',
-        fields: {
-          add: {
-            linkText: {
-              type: 'string',
-              label: 'Link Text',
-              required: true
-            },
-            linkUrl: {
-              type: 'url',
-              label: 'Link URL'
-            },
-            ariaLabel: {
-              type: 'string',
-              label: 'ARIA Label'
-            }
-          }
-        }
-      },
-      footerNav: {
-        type: 'array',
-        label: 'Footer Navigation',
-        fields: {
-          add: {
-            linkText: {
-              type: 'string',
-              label: 'Link Text',
-              required: true
-            },
-            linkUrl: {
-              type: 'url',
-              label: 'Link URL'
-            }
-          }
-        }
-      },
-      social: {
-        type: 'array',
-        label: 'Social Media Links',
-        fields: {
-          add: {
-            icon: {
-              type: 'string',
-              label: 'Icon Name',
-              required: true
-            },
-            link: {
-              type: 'url',
-              label: 'Social Media URL',
-              required: true
-            }
-          }
-        }
-      }
-    }
-  }
-};
-```
-
-### 5. 管理界面自定义教程实践
-
-#### 自定义管理栏按钮
-```javascript
-// modules/@apostrophecms/admin-bar/index.js
-export default {
-  options: {
-    add: {
-      customButton: {
-        label: 'Custom Action',
-        icon: 'custom-icon',
-        action: 'custom-action'
-      }
-    }
-  },
-  methods(self) {
+  apiRoutes(self) {
     return {
-      async customAction(req) {
-        // 自定义操作逻辑
-        return { success: true };
+      post: {
+        async sensitiveAction(req) {
+          // 检查权限
+          if (!req.user) {
+            throw self.apos.error('forbidden', 'Must be logged in');
+          }
+          
+          // 检查角色
+          if (!req.user.role === 'admin') {
+            throw self.apos.error('forbidden', 'Admin only');
+          }
+          
+          // 执行操作
+        }
       }
     };
   }
 };
 ```
 
-### 6. 静态资源管理教程实践
-
-#### 资源模块配置
+#### 数据清理（Laundry）
 ```javascript
-// modules/asset/index.js
 export default {
-  options: {
-    // 配置静态资源
-    bundles: {
-      'site': {
-        js: [
-          { file: './ui/src/index.js' }
-        ],
-        css: [
-          { file: './ui/src/index.scss' }
-        ]
+  methods(self) {
+    return {
+      async processInput(req, input) {
+        // 清理用户输入
+        const clean = {
+          email: self.apos.launder.string(input.email),
+          age: self.apos.launder.integer(input.age),
+          enabled: self.apos.launder.boolean(input.enabled),
+          url: self.apos.launder.url(input.url)
+        };
+        
+        return clean;
       }
-    }
+    };
   }
 };
 ```
 
-#### SCSS模块化结构
-```scss
-// modules/asset/ui/src/index.scss
-@import 'variables';
-@import 'mixins';
-@import 'base';
-@import 'components/buttons';
-@import 'components/forms';
-@import 'components/navigation';
-@import 'components/widgets';
-@import 'utilities';
-```
+### 16. 性能优化
 
-### 7. 扩展安装教程实践
-
-#### 安装官方扩展
-```bash
-# 安装SEO扩展
-npm install @apostrophecms/seo
-
-# 安装表单扩展
-npm install @apostrophecms/form
-
-# 安装国际化扩展
-npm install @apostrophecms/i18n-static
-```
-
-#### 配置扩展
+#### 查询优化
 ```javascript
-// app.js
-modules: {
-  '@apostrophecms/seo': {},
-  '@apostrophecms/form': {
-    options: {
-      shortcut: 'a,f'
-    }
-  },
-  '@apostrophecms/i18n-static': {
-    options: {
-      autopublish: true
-    }
-  }
-}
-```
-
-### 8. 部署最佳实践
-
-#### 环境配置
-```javascript
-// app.js
-apostrophe({
-  shortName: 'my-app',
-  baseUrl: process.env.APOS_BASE_URL || 'http://localhost:3000',
-  // 生产环境配置
-  ...(process.env.NODE_ENV === 'production' && {
-    minify: true,
-    bundle: true
+// 使用投影减少数据量
+const products = await self.find(req)
+  .project({
+    title: 1,
+    price: 1,
+    _url: 1
   })
-});
+  .toArray();
+
+// 限制关系字段数据
+const products = await self.find(req)
+  .relationships({
+    _author: {
+      title: 1,  // 只获取标题
+      _url: 1
+    }
+  })
+  .toArray();
 ```
 
-#### 部署脚本
-```json
-{
-  "scripts": {
-    "dev": "nodemon",
-    "build": "NODE_ENV=production node app @apostrophecms/asset:build",
-    "serve": "NODE_ENV=production node app",
-    "release": "npm install && npm run build && node app @apostrophecms/migration:migrate"
+#### 缓存策略
+```javascript
+export default {
+  methods(self) {
+    return {
+      async getExpensiveData(req) {
+        const cacheKey = 'expensive-data';
+        const cached = await self.apos.cache.get('myModule', cacheKey);
+        
+        if (cached) {
+          return cached;
+        }
+        
+        const data = await self.computeExpensiveData();
+        await self.apos.cache.set('myModule', cacheKey, data, 3600);
+        
+        return data;
+      }
+    };
   }
-}
+};
 ```
+
+#### 图片优化
+```nunjucks
+{# 使用响应式图片 #}
+{% set image = apos.attachment.first(data.widget.image) %}
+{% if image %}
+  <img 
+    src="{{ apos.attachment.url(image, { size: 'full' }) }}"
+    srcset="
+      {{ apos.attachment.url(image, { size: 'one-sixth' }) }} 300w,
+      {{ apos.attachment.url(image, { size: 'one-third' }) }} 600w,
+      {{ apos.attachment.url(image, { size: 'one-half' }) }} 900w,
+      {{ apos.attachment.url(image, { size: 'full' }) }} 1200w
+    "
+    sizes="(max-width: 600px) 100vw, 50vw"
+    alt="{{ image.title }}"
+  >
+{% endif %}
+```
+
+### 17. 调试和日志
+
+#### 日志记录
+```javascript
+export default {
+  methods(self) {
+    return {
+      async myMethod(req) {
+        // 信息日志
+        self.apos.util.log('Processing request...');
+        
+        // 错误日志
+        self.apos.util.error('An error occurred:', error);
+        
+        // 调试日志（需要APOS_DEBUG环境变量）
+        self.apos.util.debug('Debug info:', data);
+      }
+    };
+  }
+};
+```
+
+#### 模板调试
+```nunjucks
+{# 输出数据到控制台 #}
+{{ apos.log(data.page) }}
+
+{# 输出JSON格式 #}
+<script>
+  console.log({{ data.page | json }});
+</script>
+```
+
+## 常用命令速查
+
+### 开发命令
+```bash
+# 启动开发服务器（带热重载）
+npm run dev
+
+# 构建生产版本
+npm run build
+
+# 生产环境运行
+npm run serve
+
+# 完整发布流程
+npm run release
+```
+
+### 数据库和迁移
+```bash
+# 运行数据库迁移
+node app @apostrophecms/migration:migrate
+
+# 添加自定义迁移
+node app @apostrophecms/migration:add my-migration-name
+```
+
+### 用户管理
+```bash
+# 创建管理员用户
+node app @apostrophecms/user:add admin admin
+
+# 修改用户密码
+node app @apostrophecms/user:change-password admin
+```
+
+### 缓存和维护
+```bash
+# 清除所有缓存
+node app @apostrophecms/cache:clear
+
+# 重建搜索索引
+node app @apostrophecms/search:index
+```
+
+### 模块生成（使用CLI）
+```bash
+# 安装Apostrophe CLI
+npm install -g @apostrophecms/cli
+
+# 创建新项目
+apos create my-project
+
+# 创建模块
+apos add piece product           # Piece类型
+apos add page landing            # 页面类型
+apos add widget hero --player    # 小部件（带player）
+apos add piece-page-type article # Piece页面类型
+```
+
+### 环境变量调试
+```bash
+# 启用i18n调试
+APOS_DEBUG_I18N=1 npm run dev
+
+# 显示本地化指示器
+APOS_SHOW_I18N=1 npm run dev
+
+# 启用调试模式
+APOS_DEBUG=1 npm run dev
+```
+
+## 最佳实践总结
+
+### 开发流程
+1. **使用CLI快速创建模块**: `apos add piece/page/widget`
+2. **遵循模块命名约定**: 使用kebab-case，小部件必须以`-widget`结尾
+3. **合理组织字段**: 使用`group`分组相关字段
+4. **先继承后扩展**: 使用`extend`继承基础类，用`extendMethods`扩展方法
+5. **利用模块继承**: 项目级模块可以配置和扩展核心模块
+
+### 代码组织
+1. **模块职责单一**: 每个模块专注于一个功能
+2. **复用已有模块**: 优先使用官方核心小部件和扩展
+3. **模板复用**: 使用`extends`和`include`避免重复代码
+4. **样式模块化**: 遵循BEM命名，使用SCSS组织样式
+5. **分离关注点**: 服务端逻辑在`methods`，客户端逻辑在`ui/src`
+
+### 性能优化
+1. **查询优化**: 使用`project`限制返回字段，用`limit`限制数量
+2. **关系字段**: 使用`builders.project`只获取需要的字段
+3. **缓存使用**: 对昂贵的计算和查询使用缓存
+4. **图片优化**: 使用ApostropheCMS的图片处理API和响应式图片
+5. **资源打包**: 利用Vite的自动优化和代码分割
+
+### 安全实践
+1. **权限检查**: 在API路由中检查用户权限
+2. **数据清理**: 使用`apos.launder`清理用户输入
+3. **环境变量**: 敏感信息通过环境变量配置
+4. **字段验证**: 使用`required`和自定义验证逻辑
+5. **API保护**: 对敏感操作添加权限检查
+
+### 国际化
+1. **提前配置Locale**: 在内容录入前配置好所有locale
+2. **命名空间**: 为项目使用自定义翻译命名空间
+3. **管理UI翻译**: 设置`browser: true`包含在管理界面
+4. **使用插值**: 在翻译字符串中使用`{{ }}`进行变量替换
+5. **测试所有locale**: 确保每个locale的内容和翻译完整
+
+### 调试技巧
+1. **使用`apos.log()`**: 在模板中输出调试信息到控制台
+2. **环境变量调试**: `APOS_DEBUG_I18N=1`等调试选项
+3. **查看数据结构**: 在模板中使用`{{ data | json }}`查看数据
+4. **日志级别**: 使用`apos.util.log/error/debug`记录不同级别日志
+5. **浏览器开发工具**: 使用Vue DevTools查看管理界面组件
+
+### 维护建议
+1. **版本控制**: 使用Git管理代码，不要提交`node_modules`和`data`
+2. **数据库备份**: 定期备份MongoDB数据
+3. **迁移管理**: 使用migration系统管理数据库变更
+4. **文档化**: 为自定义模块和API编写文档
+5. **代码审查**: 多人协作时进行代码审查
 
 ## 参考文档
 

@@ -1,5 +1,57 @@
-{% import "button.html" as buttonFrag %}
+{# Enhanced Button Widget Template #}
+{% set widget = data.widget %}
+{% set path = apos.helper.linkPath(widget) %}
 
-{% set button = data.widget %}
+{# 构建按钮类名 #}
+{% set btnClasses = ['enhanced-btn'] %}
+{% set btnClasses = (btnClasses.push('enhanced-btn--variant-' + (widget.variant or 'default')), btnClasses) %}
+{% set btnClasses = (btnClasses.push('enhanced-btn--size-' + (widget.size or 'default')), btnClasses) %}
 
-{% render buttonFrag.render(button) %}
+{# 添加效果类 #}
+{% if widget.effect and widget.effect != 'none' %}
+  {% set btnClasses = (btnClasses.push('enhanced-btn--effect-' + widget.effect), btnClasses) %}
+{% endif %}
+
+{# 全宽按钮 #}
+{% if widget.fullWidth %}
+  {% set btnClasses = (btnClasses.push('enhanced-btn--full-width'), btnClasses) %}
+{% endif %}
+
+{# 禁用状态 #}
+{% if widget.disabled %}
+  {% set btnClasses = (btnClasses.push('enhanced-btn--disabled'), btnClasses) %}
+{% endif %}
+
+{# 图标相关类 #}
+{% if widget.icon %}
+  {% set btnClasses = (btnClasses.push('enhanced-btn--has-icon'), btnClasses) %}
+  {% set btnClasses = (btnClasses.push('enhanced-btn--icon-' + (widget.iconPlacement or 'right')), btnClasses) %}
+{% endif %}
+
+<div class="enhanced-btn-widget" data-enhanced-btn-widget>
+  <a 
+    href="{{ path }}" 
+    class="{{ btnClasses | join(' ') }}"
+    {% if widget.linkTarget and widget.linkTarget.includes('_blank') %}target="_blank" rel="noopener noreferrer"{% endif %}
+    {% if widget.ariaLabel %}aria-label="{{ widget.ariaLabel }}"{% endif %}
+    {% if widget.disabled %}aria-disabled="true"{% endif %}
+    role="button"
+  >
+    {# 左侧图标 #}
+    {% if widget.icon and widget.iconPlacement == 'left' %}
+      <span class="enhanced-btn__icon enhanced-btn__icon--left" aria-hidden="true">
+        <i class="fa-solid fa-{{ widget.icon }}"></i>
+      </span>
+    {% endif %}
+    
+    {# 按钮文本 #}
+    <span class="enhanced-btn__text">{{ widget.linkText or '按钮' }}</span>
+    
+    {# 右侧图标 #}
+    {% if widget.icon and widget.iconPlacement == 'right' %}
+      <span class="enhanced-btn__icon enhanced-btn__icon--right" aria-hidden="true">
+        <i class="fa-solid fa-{{ widget.icon }}"></i>
+      </span>
+    {% endif %}
+  </a>
+</div>

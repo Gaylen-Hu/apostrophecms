@@ -1,38 +1,53 @@
 <section class="timeline-widget timeline-widget--{{ data.widget.layoutStyle }}" 
          data-timeline-widget 
-         data-animation-enabled="{{ data.widget.animationEnabled | lower }}">
+         data-animation-enabled="{{ data.widget.animationEnabled | lower }}"
+         role="region"
+         aria-label="{{ data.widget.title or '时间线' }}">
+  
   {% if data.widget.title %}
     <div class="timeline-widget__header">
       <h2 class="timeline-widget__title">{{ data.widget.title }}</h2>
     </div>
   {% endif %}
 
-  <div class="timeline-widget__container">
+  <div class="timeline-widget__container" role="list">
     {% for item in data.widget.timelineItems %}
       {% set isEven = loop.index0 % 2 == 0 %}
       {% set shouldReverse = data.widget.layoutStyle == 'alternating' and not isEven %}
       
-      <div class="timeline-widget__item {{ 'timeline-widget__item--reverse' if shouldReverse }} {{ 'timeline-widget__item--animate' if data.widget.animationEnabled }}"
-           data-timeline-item="{{ loop.index0 }}">
+      <div class="timeline-widget__item 
+                  {{ 'timeline-widget__item--reverse' if shouldReverse }} 
+                  {{ 'timeline-widget__item--animate' if data.widget.animationEnabled }}
+                  {{ 'timeline-widget__item--highlighted' if item.highlighted }}"
+           data-timeline-item="{{ loop.index0 }}"
+           role="listitem">
         
         <!-- 内容区域 -->
         <div class="timeline-widget__content timeline-widget__content--{{ 'right' if shouldReverse else 'left' }}">
-          <h3 class="timeline-widget__year">{{ item.year }}</h3>
-          <h4 class="timeline-widget__item-title">{{ item.title }}</h4>
+          <time class="timeline-widget__year" datetime="{{ item.year }}">
+            {{ item.year }}
+          </time>
+          <h3 class="timeline-widget__item-title">
+            {{ item.title }}
+            {% if item.highlighted %}
+              <span class="timeline-widget__highlight-badge" aria-label="重点事件">⭐</span>
+            {% endif %}
+          </h3>
           {% if item.description %}
-            <p class="timeline-widget__description">{{ item.description }}</p>
+            <p class="timeline-widget__description">{{ item.description | nlbr | safe }}</p>
           {% endif %}
         </div>
 
         <!-- 中心节点 -->
-        <div class="timeline-widget__node">
-          <div class="timeline-widget__node-circle timeline-widget__node-circle--{{ item.color }}">
-            <i class="fa-solid fa-{{ item.icon }}"></i>
+        <div class="timeline-widget__node" role="presentation">
+          <div class="timeline-widget__node-circle timeline-widget__node-circle--{{ item.color }}"
+               aria-label="{{ item.year }} - {{ item.title }}">
+            <i class="fa-solid fa-{{ item.icon }}" aria-hidden="true"></i>
           </div>
         </div>
 
         <!-- 空白区域（用于平衡布局） -->
-        <div class="timeline-widget__spacer"></div>
+        <div class="timeline-widget__spacer" aria-hidden="true"></div>
       </div>
     {% endfor %}
   </div>
