@@ -48,6 +48,7 @@
     "@apostrophecms/seo": "^1.2.0",
     "@apostrophecms/sitemap": "^1.0.2",
     "@apostrophecms/vite": "^1.0.0",
+    "@apostrophecms/vue-material-design-icons": "^1.0.0",
     "@tailwindcss/cli": "^4.1.13",
     "aos": "^2.3.4",
     "apostrophe": "^4.18.0",
@@ -58,7 +59,8 @@
     "photoswipe": "^5.3.7",
     "rfs": "^10.0.0",
     "swiper": "^9.2.3",
-    "tailwindcss": "^4.1.13"
+    "tailwindcss": "^4.1.13",
+    "vue-material-design-icons": "^5.3.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",

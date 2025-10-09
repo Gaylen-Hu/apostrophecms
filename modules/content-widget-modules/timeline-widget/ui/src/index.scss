@@ -1,0 +1,242 @@
+// 时间条小部件样式
+.timeline-widget {
+  padding: 2rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &__header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  &__title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin: 0;
+  }
+
+  &__container {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4rem;
+    position: relative;
+
+    &--reverse {
+      flex-direction: row-reverse;
+    }
+
+    &--animate {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+
+      &.timeline-widget__item--visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__content {
+    flex: 0 0 41.666667%; // 5/12
+    padding: 0 3rem;
+
+    &--left {
+      text-align: left;
+      padding-right: 3rem;
+      padding-left: 0;
+    }
+
+    &--right {
+      text-align: right;
+      padding-left: 3rem;
+      padding-right: 0;
+    }
+  }
+
+  &__year {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+  }
+
+  &__item-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 0.5rem 0;
+  }
+
+  &__description {
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  &__node {
+    flex: 0 0 16.666667%; // 2/12
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    position: relative;
+
+    // 连接线
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 2px;
+      height: 100%;
+      background-color: #e5e7eb;
+      z-index: -1;
+    }
+  }
+
+  &__node-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+    // 颜色变体
+    &--blue {
+      background-color: #2563eb;
+    }
+
+    &--green {
+      background-color: #059669;
+    }
+
+    &--red {
+      background-color: #dc2626;
+    }
+
+    &--purple {
+      background-color: #7c3aed;
+    }
+
+    &--orange {
+      background-color: #ea580c;
+    }
+
+    &--gray {
+      background-color: #6b7280;
+    }
+  }
+
+  &__spacer {
+    flex: 0 0 41.666667%; // 5/12
+  }
+
+  // 移除最后一个项目的连接线
+  &__item:last-child &__node::before {
+    display: none;
+  }
+
+  // 响应式设计
+  @media (max-width: 768px) {
+    padding: 1rem 0;
+
+    &__title {
+      font-size: 2rem;
+    }
+
+    &__container {
+      padding: 1rem 0;
+    }
+
+    &__item {
+      flex-direction: column !important;
+      text-align: center !important;
+      margin-bottom: 3rem;
+
+      &--reverse {
+        flex-direction: column !important;
+      }
+    }
+
+    &__content {
+      flex: 1 1 100%;
+      padding: 0 1rem !important;
+      text-align: center !important;
+      margin-bottom: 1rem;
+    }
+
+    &__node {
+      flex: 0 0 auto;
+      margin: 1rem 0;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    &__spacer {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__title {
+      font-size: 1.75rem;
+    }
+
+    &__year {
+      font-size: 1.125rem;
+    }
+
+    &__item-title {
+      font-size: 1rem;
+    }
+
+    &__content {
+      padding: 0 0.5rem !important;
+    }
+  }
+}
+
+// 动画样式
+@keyframes timelineFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 当动画启用时的样式
+.timeline-widget--animate .timeline-widget__item {
+  animation: timelineFadeIn 0.6s ease forwards;
+}
+
+// 为每个项目添加延迟
+.timeline-widget--animate .timeline-widget__item:nth-child(1) { animation-delay: 0.1s; }
+.timeline-widget--animate .timeline-widget__item:nth-child(2) { animation-delay: 0.2s; }
+.timeline-widget--animate .timeline-widget__item:nth-child(3) { animation-delay: 0.3s; }
+.timeline-widget--animate .timeline-widget__item:nth-child(4) { animation-delay: 0.4s; }
+.timeline-widget--animate .timeline-widget__item:nth-child(5) { animation-delay: 0.5s; }
+.timeline-widget--animate .timeline-widget__item:nth-child(6) { animation-delay: 0.6s; }
+.timeline-widget--animate .timeline-widget__item:nth-child(7) { animation-delay: 0.7s; }
+.timeline-widget--animate .timeline-widget__item:nth-child(8) { animation-delay: 0.8s; }

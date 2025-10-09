@@ -40,7 +40,9 @@ export default {
   'news-hero-widget': {},
   'product-card-widget': {},
   'carousel-widget': {},
+  'timeline-widget': {},
   'side-layout-widget': {},
   'side-content-widget': {},
   'certification-card-widget': {},
+  'timeline-widget': {},
 };

@@ -28,8 +28,10 @@ apostrophe({
     // ***********************************************************************
     // `className` options set custom CSS classes for Apostrophe core widgets.
     '@apostrophecms/express': {
-      session: {
-        secret: process.env.SESSION_SECRET || 'fallback-secret-for-development-only'
+      options: {
+        session: {
+          secret: process.env.SESSION_SECRET || 'fallback-secret-for-development-only'
+        }
       }
     },
     '@apostrophecms/rich-text-widget': {
