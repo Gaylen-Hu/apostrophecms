@@ -2,7 +2,7 @@
  * @Author: xinyuHu hxyrkcy@outlook.com
  * @Date: 2025-09-16 18:44:37
  * @LastEditors: xinyuHu hxyrkcy@outlook.com
- * @LastEditTime: 2025-09-16 18:44:39
+ * @LastEditTime: 2025-10-10 16:01:34
  * @FilePath: \my-app\modules\@apostrophecms\page\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,27 +11,35 @@
 
 export default {
   options: {
+    cache: {
+      page: {
+        // Specified in seconds
+        maxAge: 6000
+      },
+      api: {
+        // Specified in seconds
+        maxAge: 3000
+      }
+    },
     types: [
       {
         name: 'default-page',
         label: 'Default'
       },
-      {
-        name: 'about-page',
-        label: 'About'
-      },
+      
       {
         name: 'products-page',
         label: 'Products'
       },
       {
+        name: 'case-page',
+        label: '案例列表页'
+      },
+      {
         name: 'news-page-page',
         label: '新闻列表页'
       },
-      { 
-        name: 'contact-page',
-        label: 'Contact'
-      },
+     
       {
         name: '@apostrophecms/home-page',
         label: 'Home'

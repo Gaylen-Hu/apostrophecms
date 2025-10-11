@@ -91,6 +91,8 @@ apostrophe({
     'products-page': {},
     'news-page': {},
     'news-page-page': {},
+    'case': {},
+    'case-page': {},
     'contact-page': {},
     'home-page': {},
     'homePageFirst-widget': {},

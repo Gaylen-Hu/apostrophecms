@@ -1,0 +1,224 @@
+{% extends "layout.html" %}
+{% import "@apostrophecms/pager:macros.html" as pager with context %}
+
+{% block main %}
+<main class="flex-grow">
+  {# 英雄区域 #}
+  <section class="relative py-20 bg-blue-900 text-white">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute inset-0 bg-blue-900/90 z-10"></div>
+      <img src="https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_16_9&prompt=logistics%20success%20cases%2C%20warehouse%20operation%2C%20supply%20chain%20management&sign=case123" alt="成功案例" class="w-full h-full object-cover">
+    </div>
+    <div class="container mx-auto px-4 md:px-6 relative z-10">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">成功案例</h1>
+      <p class="text-xl text-blue-100 max-w-3xl">探索我们的物流解决方案如何助力客户成功</p>
+    </div>
+  </section>
+
+  {# 筛选器区域 #}
+  <section class="py-12 bg-white shadow-md">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        {# 搜索框 #}
+        <div class="w-full md:w-1/3">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="caseSearch"
+              placeholder="搜索案例..." 
+              class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+              value="{{ data.query.search or '' }}">
+            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+          </div>
+        </div>
+        
+        {# 分类筛选按钮 #}
+        <div class="w-full md:w-2/3">
+          <div class="flex flex-wrap gap-2">
+            <a href="{{ data.page._url | build({category: null, isFeatured: null, search: null}) }}" 
+               class="px-6 py-2 rounded-full text-sm font-medium transition-all {% if not data.query.category and not data.query.isFeatured %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+              全部案例
+            </a>
+            
+            <a href="{{ data.page._url | build({category: 'transport', isFeatured: null}) }}" 
+               class="px-6 py-2 rounded-full text-sm font-medium transition-all {% if data.query.category === 'transport' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+              运输案例
+            </a>
+            
+            <a href="{{ data.page._url | build({category: 'warehouse', isFeatured: null}) }}" 
+               class="px-6 py-2 rounded-full text-sm font-medium transition-all {% if data.query.category === 'warehouse' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+              仓储案例
+            </a>
+            
+            <a href="{{ data.page._url | build({category: 'supply-chain', isFeatured: null}) }}" 
+               class="px-6 py-2 rounded-full text-sm font-medium transition-all {% if data.query.category === 'supply-chain' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+              供应链案例
+            </a>
+            
+            <a href="{{ data.page._url | build({category: 'cross-border', isFeatured: null}) }}" 
+               class="px-6 py-2 rounded-full text-sm font-medium transition-all {% if data.query.category === 'cross-border' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+              跨境物流
+            </a>
+            
+            <a href="{{ data.page._url | build({category: null, isFeatured: 'true'}) }}" 
+               class="px-6 py-2 rounded-full text-sm font-medium transition-all {% if data.query.isFeatured === 'true' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+              推荐案例
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# 案例列表 #}
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 md:px-6">
+      {% if data.pieces.length > 0 %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {% for piece in data.pieces %}
+            <article class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full" style="opacity: 1; transform: none;">
+              {# 展示图 #}
+              <div class="relative h-48 overflow-hidden">
+                {% if piece.featuredImage %}
+                  {% area piece, 'featuredImage' with {
+                    '@apostrophecms/image': {
+                      class: 'w-full h-full object-cover transition-transform duration-500 hover:scale-110'
+                    }
+                  } %}
+                {% else %}
+                  <img src="https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_4_3&prompt=logistics%20case%20study%2C%20supply%20chain%20solution%2C%20warehouse%20management&sign=default123" 
+                       alt="{{ piece.mainTitle }}" 
+                       class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                {% endif %}
+                
+                {# 分类标签 #}
+                <div class="absolute top-3 left-3 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  {% if piece.category === 'transport' %}运输案例
+                  {% elif piece.category === 'warehouse' %}仓储案例
+                  {% elif piece.category === 'supply-chain' %}供应链案例
+                  {% elif piece.category === 'cross-border' %}跨境物流
+                  {% else %}其他
+                  {% endif %}
+                </div>
+              </div>
+              
+              {# 案例内容 #}
+              <div class="p-6 flex flex-col flex-grow">
+                {# 发布日期 #}
+                <div class="flex items-center text-gray-500 text-sm mb-3">
+                  <i class="fa-solid fa-calendar mr-2"></i>
+                  {{ piece.publishDate | date('YYYY-MM-DD') }}
+                </div>
+                
+                {# 主标题 #}
+                <h3 class="text-xl font-bold text-gray-800 mb-3 hover:text-blue-600 transition-colors">
+                  <a class="hover:underline" href="{{ piece._url }}" data-discover="true">
+                    {{ piece.mainTitle }}
+                  </a>
+                </h3>
+                
+                {# 案例描述 #}
+                {% if piece.description %}
+                  <p class="text-gray-600 mb-4 flex-grow">
+                    {{ piece.description }}
+                  </p>
+                {% else %}
+                  <p class="text-gray-600 mb-4 flex-grow">
+                    点击阅读更多内容...
+                  </p>
+                {% endif %}
+                
+                {# 阅读更多按钮 #}
+                <a class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-auto self-start" href="{{ piece._url }}" data-discover="true">
+                  查看详情 
+                  <span class="sr-only">关于 {{ piece.mainTitle }}</span>
+                  <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                </a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
+        {# 分页器 #}
+        {% if data.totalPages > 1 %}
+          <div class="flex justify-center mt-16">
+            <nav class="inline-flex rounded-md shadow">
+              {{ pager.render({ 
+                page: data.currentPage, 
+                total: data.totalPages,
+                shown: 5,
+                class: 'px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50'
+              }, data.url) }}
+            </nav>
+          </div>
+        {% endif %}
+      {% else %}
+        {# 空状态 #}
+        <div class="text-center py-20">
+          <i class="fa-solid fa-folder-open text-gray-300 text-6xl mb-6"></i>
+          <h3 class="text-2xl font-bold text-gray-700 mb-3">暂无案例</h3>
+          <p class="text-gray-500 mb-6">{% if data.query.search %}未找到符合"{{ data.query.search }}"的案例{% else %}当前分类下还没有案例，请查看其他分类{% endif %}</p>
+          <a href="{{ data.page._url }}" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <i class="fa-solid fa-arrow-left mr-2"></i>返回全部案例
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  {# 订阅/CTA区域 #}
+  <section class="py-20 bg-blue-600 text-white">
+    <div class="container mx-auto px-4 md:px-6 text-center">
+      <div style="opacity: 1; transform: none;">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">需要定制化物流解决方案？</h2>
+        <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">我们的专业团队随时为您提供咨询服务</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+          <a href="/contact" class="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-3 px-6 rounded-lg transition-all">立即联系</a>
+          <a href="/products" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold py-3 px-6 rounded-lg transition-all">查看产品</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+{# 搜索功能JavaScript #}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('caseSearch');
+    if (searchInput) {
+      // 处理回车键搜索
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          performSearch();
+        }
+      });
+      
+      // 防抖搜索（用户停止输入500ms后自动搜索）
+      let searchTimeout;
+      searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+          performSearch();
+        }, 500);
+      });
+      
+      function performSearch() {
+        const searchTerm = searchInput.value.trim();
+        const currentUrl = new URL(window.location.href);
+        
+        if (searchTerm) {
+          currentUrl.searchParams.set('search', searchTerm);
+        } else {
+          currentUrl.searchParams.delete('search');
+        }
+        
+        // 重置到第一页
+        currentUrl.searchParams.delete('page');
+        
+        window.location.href = currentUrl.toString();
+      }
+    }
+  });
+</script>
+{% endblock %}
+
