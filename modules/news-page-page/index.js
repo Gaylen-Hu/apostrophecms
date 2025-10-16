@@ -2,7 +2,15 @@ export default {
   extend: '@apostrophecms/piece-page-type',
   options: {
     label: '新闻列表页',
-    perPage: 9
+    perPage: 9,
+    piecesFilters: [
+      {
+        name: 'category'
+      },
+      {
+        name: 'isFeatured'
+      }
+    ]
   },
   fields: {
     add: {
@@ -43,6 +51,16 @@ export default {
   },
   extendMethods(self) {
     return {
+      indexQuery(_super, req) {
+        const query = _super(req);
+        
+        // 处理搜索参数
+        if (req.query.search) {
+          return query.search(req.query.search);
+        }
+        
+        return query;
+      },
       filterByIndexPage(_super, query, page) {
         // 如果页面有分类，添加到查询中
         // 如果页面分类是 'all'，不修改查询，返回所有文章

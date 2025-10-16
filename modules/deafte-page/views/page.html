@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<main class="flex-grow">
+  {# 头部区域 #}
+  <section class="relative py-20 bg-blue-900 text-white">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute inset-0 bg-blue-900/90 z-10"></div>
+      
+      {# 背景图片 #}
+      {% if data.page.headbackground %}
+        {% set bgImage = apos.attachment.url(data.page.headbackground, { size: 'full' }) %}
+        <img
+          src="{{ bgImage }}"
+          alt="{{ data.page.headertitle or data.page.title }}"
+          class="w-full h-full object-cover"
+        />
+      {% else %}
+        {# 默认背景图 #}
+        <img
+          src="https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_16_9&prompt=company%20about%20us%2C%20corporate%20building%2C%20professional%20business&sign=about123"
+          alt="{{ data.page.title }}"
+          class="w-full h-full object-cover"
+        />
+      {% endif %}
+    </div>
+    
+    {# 头部内容 #}
+    <div class="container mx-auto px-4 md:px-6 relative z-10">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">
+        {{ data.page.headertitle or data.page.title }}
+      </h1>
+      {% if data.page.description %}
+        <p class="text-xl text-blue-100 max-w-3xl">
+          {{ data.page.description }}
+        </p>
+      {% endif %}
+    </div>
+  </section>
+
+  {# 副内容区域 #}
+  {% if data.page.subtext or data.page.subImg %}
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          {# 副文本 #}
+          {% if data.page.subtext %}
+            <div class="prose prose-lg max-w-none">
+              {% area data.page, 'subtext' %}
+            </div>
+          {% endif %}
+          
+          {# 副图片 #}
+          {% if data.page.subImg %}
+            <div class="rounded-xl overflow-hidden shadow-xl">
+              {% area data.page, 'subImg' %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {# 主要内容区域 #}
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 md:px-6">
+      {% area data.page, 'main' %}
+    </div>
+  </section>
+</main>
+{% endblock %}

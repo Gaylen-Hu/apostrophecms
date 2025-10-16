@@ -7,7 +7,9 @@ export default {
     pluralLabel: '新闻文章',
     i18n: {
       browser: true
-    }
+    },
+    // 启用搜索功能
+    searchable: true
   },
   fields: {
     add: {
@@ -15,14 +17,16 @@ export default {
       author: {
         type: 'string',
         label: '作者',
-        required: true
+        required: true,
+        searchable: true
       },
       // 摘要字段
       excerpt: {
         type: 'string',
         label: '摘要',
         textarea: true,
-        help: '新闻摘要，用于列表页显示'
+        help: '新闻摘要，用于列表页显示',
+        searchable: true
       },
       // 展示图字段
       featuredImage: {
